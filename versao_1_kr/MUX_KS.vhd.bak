@@ -1,0 +1,20 @@
+LIBRARY IEEE;
+use IEEE.std_logic_1164.all;
+
+entity MUX_kr is
+port(
+	M_kr: in STD_LOGIC_VECTOR(3 downto 0);
+	S_kr: in std_logic_vector(1 downto 0);
+	Ym_kr: out std_logic
+	);
+END MUX_kr;
+
+architecture structural OF MUX_kr is 
+
+begin
+
+
+Ym_kr <= (not S_kr(1) and not S_kr(0) and M_kr(0)) or (not S_kr(1) and S_kr(0) and M_kr(1)) or (S_kr(1) and not S_kr(0) and M_kr(2)) or (S_kr(1) and S_kr(0) and M_kr(3));
+
+
+end structural;
