@@ -2,6 +2,7 @@ LIBRARY IEEE;
 use IEEE.std_logic_1164.all;
 
 entity MUX_KS is
+
 port(
 	M_KS: in STD_LOGIC_VECTOR(3 downto 0);
 	S_KS: in std_logic_vector(1 downto 0);
