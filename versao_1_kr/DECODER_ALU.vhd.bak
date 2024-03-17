@@ -1,0 +1,28 @@
+LIBRARY IEEE;
+use IEEE.std_logic_1164.all;
+
+entity DECODER_ALU is
+port(
+	OP: in STD_LOGIC_VECTOR(2 downto 0);
+	OPA : out STD_LOGIC;
+	OPB : out STD_LOGIC;
+	OPC : out STD_LOGIC;
+	OPD : out STD_LOGIC;
+	OPE : out STD_LOGIC;
+	OPF : out STD_LOGIC	
+	);
+	
+end DECODER_ALU;
+
+architecture structural of DECODER_ALU is
+begin
+
+	OPA <= OP(1);
+	OPB <= OP(0);
+	OPC <= OP(2);
+	OPD <= OP(0);
+	OPE <= OP(1);
+	OPF <= OP(2);
+
+
+end structural;
