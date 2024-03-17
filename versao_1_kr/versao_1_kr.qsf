@@ -56,3 +56,5 @@ set_global_assignment -name VHDL_FILE Registro_Cont.vhd
 set_global_assignment -name VHDL_FILE MUX_KS.vhd
 set_global_assignment -name VHDL_FILE DECODER_KS.vhd
 set_global_assignment -name VHDL_FILE clkDIV.vhd
+set_global_assignment -name VHDL_FILE MUX_KS_tb.vhd
+set_global_assignment -name VHDL_FILE Counter_tb.vhd
