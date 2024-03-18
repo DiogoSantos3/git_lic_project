@@ -1,4 +1,13 @@
 import isel.leic.UsbPort
+object HAL{
+
+
+}
+fun init(){
+    UsbPort.write(lastOutpt)
+}
+
+var lastOutpt = 0
 
 fun main(args: Array<String>) {
     init()
@@ -6,49 +15,40 @@ fun main(args: Array<String>) {
 
         val value = UsbPort.read()
         lastOutpt = value
-        UsbPort.write(value)
+        //UsbPort.write(value)
         //isBit(2)
-        setBits(2)
-        clrBits(2)
+        //setBits(3)
+        //clrBits(7)
+        writeBits(7,3)
     }
 }
-var lastOutpt = 0
-fun init(){
-    UsbPort.write(lastOutpt)
-}
 
+//read switches (bits)
 fun readBits(mask:Int):Int{
     val input = UsbPort.read()
     return input and mask
 }
 
+//identify bits
 fun isBit(mask:Int):Boolean{
-    val input = UsbPort.read()
-    var b = 0
-    b = input and mask
-    if (b != 0){
-        print("TRUE\n")
-        return true
-    }
-    print("FALSE\n")
-    return false
+    return UsbPort.read().and(mask) != 0
 }
 
+//define bits ("turn on" leds)
 fun setBits(mask:Int){
-    val last = lastOutpt
-    UsbPort.write(last or mask)
+    lastOutpt = lastOutpt.or(mask)
+    UsbPort.write(lastOutpt)
 
 }
 
+//clear bits
 fun clrBits(mask:Int){
-    val last = lastOutpt
-    UsbPort.write(  mask.inv() and last)
+    lastOutpt = mask.inv().and(lastOutpt)
+    UsbPort.write(  lastOutpt)
 }
 
-/*fun writeBits(mask:Int, value:Int){
-    val last = lastOutpt
-    var a = 0
-    a = last and mask
-    a = a.toString()
-    a = a.drop(value)
-}*/
+//write the bits (value) in the place that we want
+fun writeBits(mask: Int, value: Int) {
+    if (mask==0)clrBits(mask)
+    setBits(value)
+}
