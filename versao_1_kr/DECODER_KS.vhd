@@ -13,11 +13,11 @@ end DECODER_KS;
 architecture structural of DECODER_KS is
 begin
 
-D_dec(0) = not (NOT (S_dec(0)) and not (S_dec(1)))
+D_dec(0) <= not (NOT (S_dec(0)) and not (S_dec(1))) ; 
 
-D_dec(1) = not (NOT (S_dec(0)) and S_dec(1))
+D_dec(1) <= not (NOT (S_dec(0)) and S_dec(1)) ; 
 
-D_dec(2) = not (S_dec(0) and not (S_dec(1)))
+D_dec(2) <= not (S_dec(0) and not (S_dec(1))) ;
 
 
 end structural;
