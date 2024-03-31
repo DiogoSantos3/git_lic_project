@@ -1,54 +1,178 @@
 import isel.leic.UsbPort
+import isel.leic.utils.Time
+import javax.swing.table.TableColumn
+import kotlin.math.E
+
 object HAL{
 
+    fun init(){
+        UsbPort.write(lastOutpt)
+    }
+    var lastOutpt = 0
+
+    //read switches (bits)
+    fun readBits(mask:Int):Int{
+        val input = UsbPort.read()
+        return input and mask
+    }
+
+    //identify bits
+    fun isBit(mask:Int):Boolean{
+        return UsbPort.read().and(mask) != 0
+    }
+
+    //define bits ("turn on" leds)
+    fun setBits(mask:Int){
+        lastOutpt = lastOutpt.or(mask)
+        UsbPort.write(lastOutpt)
+
+    }
+
+    //clear bits
+    fun clrBits(mask:Int){
+        lastOutpt = mask.inv().and(lastOutpt)
+        UsbPort.write(  lastOutpt)
+    }
+
+    fun writeBits(mask: Int, value: Int) {
+        if (mask==0)clrBits(mask)
+        setBits(value)
+    }
+}
+    //write the bits (value) in the place that we want
+
+
+
+const val NONE = 0
+const val timeout = 5000L
+
+object KBD {
+    var input = 0
+
+    fun init() {
+        HAL.init()
+    }
+
+    fun getKey():Char {
+        Thread.sleep(timeout)
+        val sequence = input.toString().takeLast(4)
+        val result = when (sequence) {
+            "0000" -> '1'
+            "0001" -> '4'
+            "0010" -> '7'
+            "0011" -> '*'
+            "0100" -> '2'
+            "0101" -> '5'
+            "0110" -> '8'
+            "0111" -> '0'
+            "1000" -> '3'
+            "1001" -> '6'
+            "1010" -> '9'
+            "1011" -> '#'
+            else -> NONE.toChar()
+        }
+        println(result)
+        return result
+    }
+
+    //NOT WORKING
+    fun waitKey(timeout: Long):Char {
+        val startTime = System.currentTimeMillis()
+        while (System.currentTimeMillis() - startTime < timeout) {
+            val mask = UsbPort.read()
+            val newInput = HAL.readBits(mask)
+            if (newInput != 0) {
+                input = newInput
+                val key = getKey()
+                if (key != NONE.toChar()) {
+                    println(key)
+                    return key
+                }
+            }
+        }
+        println("NONE")
+        return NONE.toChar()
+    }
+}
+
+
+object LCD{
+    private const val LINE = 2
+    private const val COLS =16
+    private const val SERIAL_INTERFACE = false
+    private const val E_MASK = 0x20
+    private const val RS_MASK = 0x40
+    private const val CLK_REG_MASK = 0x10
+    private const val DATA_MASK = 0x0F
+
+
+    private fun writeByteParallel(rs:Boolean, data:Int){
+        if (rs)HAL.setBits(RS_MASK)
+        else{
+            HAL.setBits(E_MASK)
+            HAL.writeBits(DATA_MASK,data)
+            HAL.setBits(CLK_REG_MASK)
+            HAL.clrBits(CLK_REG_MASK)
+            val high =  data.shr(data)
+            HAL.writeBits(DATA_MASK,high)
+            HAL.setBits(CLK_REG_MASK)
+            HAL.clrBits(CLK_REG_MASK)
+            HAL.clrBits(E_MASK)
+        }
+    }
+
+    private fun writeByteSerial(rs:Boolean, data:Int){TODO()}
+
+    private fun writeByte(rs:Boolean, data:Int){
+        if (SERIAL_INTERFACE) writeByteSerial(rs,data)
+        else {writeByteParallel(rs,data)}
+    }
+
+    private fun writeCMD(data:Int) {writeByte(false,data)}
+
+    private fun writeDATA(data:Int){writeByte(true,data)}
+
+    fun init(){
+        writeCMD(0b00110000)
+        Time.sleep(15)
+        writeCMD(0b00110000)
+        Time.sleep(1)
+        writeCMD(0b00110000)
+        writeCMD(0b00111000)
+        writeCMD(0b00001000)
+        writeCMD(0b00000001)
+        writeCMD(0b00000110)
+        writeCMD(0b00001111)
+    }
+
+    fun write_char(c:Char){writeDATA(c.code)}
+
+    fun write_text(text:String){
+        for (i in 0 until text.length){
+            write_char(text[i])}
+    }
+
+    fun cursor(line:Int, column:Int){TODO()}
+
+    fun clear(){TODO()}
+
+
+
+
 
 }
-fun init(){
-    UsbPort.write(lastOutpt)
-}
 
-var lastOutpt = 0
 
 fun main(args: Array<String>) {
-    init()
+    HAL.init()
     while(true){
 
         val value = UsbPort.read()
-        lastOutpt = value
+        HAL.lastOutpt = value
         //UsbPort.write(value)
         //isBit(2)
         //setBits(3)
         //clrBits(7)
-        writeBits(7,3)
+        HAL.writeBits(7,3)
     }
-}
-
-//read switches (bits)
-fun readBits(mask:Int):Int{
-    val input = UsbPort.read()
-    return input and mask
-}
-
-//identify bits
-fun isBit(mask:Int):Boolean{
-    return UsbPort.read().and(mask) != 0
-}
-
-//define bits ("turn on" leds)
-fun setBits(mask:Int){
-    lastOutpt = lastOutpt.or(mask)
-    UsbPort.write(lastOutpt)
-
-}
-
-//clear bits
-fun clrBits(mask:Int){
-    lastOutpt = mask.inv().and(lastOutpt)
-    UsbPort.write(  lastOutpt)
-}
-
-//write the bits (value) in the place that we want
-fun writeBits(mask: Int, value: Int) {
-    if (mask==0)clrBits(mask)
-    setBits(value)
 }
