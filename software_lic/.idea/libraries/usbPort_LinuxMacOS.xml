@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="usbPort_LinuxMacOS">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/usbPort_LinuxMacOS.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,25 @@
+UsbPort = UsbPort
+kbd     = Keyboard("123456789*0#",4,3,0)
+lcd     = LCD
+regLow  = Register(4)
+regHigh = Register(4)
+
+
+--------------------------------------
+KeyBoard Reader
+--------------------------------------
+1 -> kbd.oe
+kbd.K[0-3] -> UsbPort.I[0-3]
+kbd.val -> UsbPort.I4
+UsbPort.O7 -> kbd.ack
+
+--------------------------------------
+LCD
+--------------------------------------
+Serial Receiver
+UsbPort.O[0-3] -> regLow.in[0-3]
+UsbPort.O6 -> regLow.clk, regHigh.clk
+regLow.out[0-3] -> lcd.D[0-3], regHigh.in[0-3]
+regHigh.out[0-3] -> lcd.D[4-7]
+UsbPort.O5 -> lcd.e
+UsbPort.O4 -> lcd.rs
