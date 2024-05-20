@@ -48,6 +48,7 @@ fun main() {
     LCD.init()
     SerialEmitter.init()
     ScoreDisplay.init()
+
     LCD.clear()
     LCD.cursor(0, 0)
     TUI.writeKey(99999999999999999)
