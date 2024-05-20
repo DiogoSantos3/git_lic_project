@@ -1,39 +1,52 @@
+object SerialEmitter { // Envia tramas para os diferentes módulos Serial Receiver.
+    val SSLCD_MASK = 0x01
+    val SCORESelMask = 0x02
+    val SCLOCK_MASK = 0x10
+    val SDX_MASK = 0x08
 
-object SerialEmitter{ //Envia tramas para os diferentes módulos Serial Receiver
+    enum class Destination { LCD, SCORE }
 
-    enum class Destination{LCD,SCORE}
-
-    private const val SSSCORE_MASK = 0x03
-    private const val SSLCD_MASK = 0x00
-    private const val SCLOCK_MASK = 0x01
-    private const val SDX_MASK = 0x02
-
-    //Inicia a class
-    fun init(){
+    // Inicia a classe
+    fun init() {
         HAL.init()
         HAL.setBits(SSLCD_MASK)
-        HAL.setBits(SSLCD_MASK)
+        HAL.setBits(SCORESelMask)
+        HAL.clrBits(SCLOCK_MASK)
     }
 
-    /*Envia tramas para o Serial Receiver identificando o destino em addr, os bits de dados
-    em 'data' e em size o número de bits a enviar (calcular o bit de paridade???)*/
+    // Envia uma trama para o SerialReceiver identificado o destino em addr,os bits de dados em
+// ‘data’ e em size o número de bits a enviar.
     fun send(addr: Destination, data: Int, size: Int) {
-        val clrMask = if (addr == Destination.LCD) SSLCD_MASK else SSSCORE_MASK
-        val setMask = if (addr == Destination.LCD) SSLCD_MASK else SSSCORE_MASK
+        val mask = if (addr == Destination.LCD) SSLCD_MASK else SCORESelMask
+        var parity = 0
+        val frame = data
+        var bitMask = 0x01
 
-        HAL.clrBits(clrMask)
-        var update = data
-
-        for(i in 0..<size) {
-            HAL.clrBits(SCLOCK_MASK)
-            HAL.writeBits(SDX_MASK, update)
+        HAL.clrBits(mask)
+        for (i in 0..<size) {
+            if ((frame and bitMask) != 0) {
+                parity++
+                HAL.setBits(SDX_MASK)
+            } else {
+                HAL.clrBits(SDX_MASK)
+            }
             HAL.setBits(SCLOCK_MASK)
-            update = update shr 1
+            HAL.clrBits(SCLOCK_MASK)
+            bitMask = bitMask shl 1
         }
 
+        if (parity % 2 != 0) {
+            HAL.setBits(SDX_MASK)
+        } else {
+            HAL.clrBits(SDX_MASK)
+        }
+        HAL.setBits(SCLOCK_MASK)
         HAL.clrBits(SCLOCK_MASK)
-        HAL.setBits(setMask)
+        HAL.setBits(mask)
     }
-
 }
-fun main(){TODO()}
+    fun main(){
+    HAL.init()
+    SerialEmitter.init()
+    SerialEmitter.send(SerialEmitter.Destination.LCD,0x155,9)
+}

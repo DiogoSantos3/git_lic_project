@@ -5,25 +5,20 @@ object LCD{//Escreve no LCD usando a interface a 4 bits
 
     private const val LINES = 2                 //Dimensão do display - LINES
     private const val COLS = 16                 ////Dimensão do display - COLUMNS
-    private const val SERIAL_INTERFACE = false
+    private const val SERIAL_INTERFACE = true
     private const val E_MASK = 0x20            //UsbPort.O5 -> lcd.e
     private const val RS_MASK = 0x10           //UsbPort.O4 -> lcd.rs
-    private const val CLK_REG_MASK = 0x40      //UsbPort.O6 -> regLow.clk, regHigh.clk
+    const val CLK_REG_MASK = 0x40              //UsbPort.O6 -> regLow.clk, regHigh.clk
     private const val DATA_MASK = 0x0F
 
     //Escreve um byte de comandos/dados no LCD em paralelo
     private fun writeByteParallel(rs: Boolean, data: Int) {
-        //--------SIMPLE ERROR HERE----------
-        val rs = if (rs) 1 else 0
+        val sr = if (rs) 1 else 0
 
         //Escolher se queremos uma mensagem de controlo ou de dados
-        if (rs == 1){HAL.setBits(RS_MASK)}//Mensagem de dados
+        if (sr == 1){HAL.setBits(RS_MASK)}//Mensagem de dados
         else HAL.clrBits(RS_MASK)//Mensagem de controlo
 
-        /*
-        if (rs){HAL.setBits(RS_MASK)}
-        else HAL.clrBits(RS_MASK)
-         */
 
         HAL.setBits(E_MASK)              //"Ativa" o enable
 
@@ -42,10 +37,13 @@ object LCD{//Escreve no LCD usando a interface a 4 bits
     }
 
     //Escreve um byte de comandos/dados no LCD em série
-    private fun writeByteSerial(rs:Boolean, data:Int){TODO()}
+    private fun writeByteSerial(rs:Boolean, data:Int){
+            val sr = if (rs) 1 else 0
+            SerialEmitter.send(SerialEmitter.Destination.LCD,data.shl(1) + sr ,9)
+    }
 
     //Escreve um byte de comandos/dados no LCD
-    private fun writeByte(rs:Boolean, data:Int){
+    fun writeByte(rs:Boolean, data:Int){
         if (SERIAL_INTERFACE) writeByteSerial(rs,data)
         else {writeByteParallel(rs,data)}
     }
@@ -59,6 +57,7 @@ object LCD{//Escreve no LCD usando a interface a 4 bits
 
     //Envia a sequencia de iniciação para a comunicação 4 bits (?)
     fun init(){
+
         writeCMD(0b00110000)
         Time.sleep(15)
         writeCMD(0b00110000)
@@ -88,7 +87,7 @@ object LCD{//Escreve no LCD usando a interface a 4 bits
     //Envia comandos para limpar o ecrã e posicionar o cursor no (0,0)
     fun clear(){
         writeCMD(0b00000001)
-        cursor(0,0)
+      //  cursor(0,0)
     }
 
 }
@@ -98,7 +97,7 @@ fun main() {
     LCD.init()
     while (true) {
         LCD.clear()
-        LCD.write("ola burro")
+        LCD.write("Hello World")
         Thread.sleep(2000)
     }
 }
