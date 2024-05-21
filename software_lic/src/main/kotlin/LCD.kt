@@ -68,6 +68,8 @@ object LCD{//Escreve no LCD usando a interface a 4 bits
         writeCMD(0b00000001)
         writeCMD(0b00000110)
         writeCMD(0b00001111)
+        clear()
+        cursor(0, 0)
     }
 
     //Escreve um caráter na posição corrente
@@ -80,14 +82,14 @@ object LCD{//Escreve no LCD usando a interface a 4 bits
     }
 
     //Envia comandos para posicionar o cursor
-    fun cursor(line: Int, column: Int){
-        writeCMD((line * 0X40 + column) or 0x80)
+    fun cursor(line: Int, row: Int){
+        writeCMD((line * 0X40 + row) or 0x80)
     }
 
     //Envia comandos para limpar o ecrã e posicionar o cursor no (0,0)
     fun clear(){
         writeCMD(0b00000001)
-      //  cursor(0,0)
+
     }
 
 }

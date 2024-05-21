@@ -45,7 +45,7 @@ fun main() {
     while (count != 10){
         x =1 +  count
         Time.sleep(1000)
-        ScoreDisplay.setScore(0x000+x)
+        ScoreDisplay.setScore(x)
         SerialEmitter.send(SerialEmitter.Destination.SCORE,0b0000110,7) //Update Display
 
         count += 1

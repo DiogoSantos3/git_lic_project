@@ -6,7 +6,31 @@ object TUI {
 
     enum class Column { UP, DOWN }
 
+    var col0 = 16
+    var col1 = 16
 
+    fun write(data:String,pos:Boolean,line:Int,row:Int){
+        if(pos){
+            LCD.cursor(line, row)
+            LCD.write(data)
+            if (line == 0) {
+                col0 = col0 + 1
+            } else {
+                col1 = col1 + 1
+            }
+        }
+        else{
+            LCD.cursor(line, row)
+            LCD.write(data)
+            if (line == 0) {
+                col0 = col0 - 1
+            } else {
+                col1 = col1 - 1
+            }
+        }
+
+
+    }
     fun writeKey(time: Long) {
         var temp = KBD.waitKey(time)//Obtem a tecla premida
         while (temp != KBD.NONE) {//Enquando a tecla não for nenhuma...
@@ -51,6 +75,7 @@ fun main() {
 
     LCD.clear()
     LCD.cursor(0, 0)
-    TUI.writeKey(99999999999999999)
     LCD.write("test")
+    TUI.writeKey(99999999999999999)
+
 }
