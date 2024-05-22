@@ -88,24 +88,18 @@ object SpaceInvadersApp {
             LCD.cursor(line,row)
 
 
-            println("List0 no inicio do ciclo = ${ list0 }")
-            println("List1 no inicio do ciclo = ${ list1 }")
-            println("========================================")
             //SHOW INVADERS
             if (randomLine == 0) {
-                // Adiciona o número à lista1 e escreve no display
                 list0 += randomNumber
                 escreve(list0, list1,randomLine,1,hit)
 
 
             } else {
-                // Adiciona o número à lista2 e escreve no display
                 list1 += randomNumber
                 escreve(list0, list1,randomLine,1,hit)
             }
-            println("List0 no inicio do ciclo = ${ list0 }")
-            println("List1 no inicio do ciclo = ${ list1 }")
-            println("========================================")
+
+
 
             LCD.cursor(line,row)
 
@@ -116,32 +110,30 @@ object SpaceInvadersApp {
                     if(line == 0){
                         line = 1
                         LCD.cursor(line,row)
+                        Time.sleep(500)
                     }
                     else{
                         line = 0
                         LCD.cursor(line,row)
+                        Time.sleep(500)
                     }
                 }
 
                 '#' -> {
                     if(line == 0){
-                        if(shootingKey == list0[0]) {
+                        if(list0.isNotEmpty() && shootingKey == list0[0]) {
                             list0 = list0.substring(1)
-                            println("----------------------------------------")
-                            println("List0 no quando atingido = ${ list0 }")
-                            println("----------------------------------------")
                             LCD.cursor(line, row)
                             hit = true
+                            Time.sleep(500)
                         }
                     }
                     else{
-                        if(shootingKey == list1[0]) {
+                        if(list0.isNotEmpty() && shootingKey == list1[0]) {
                             list1 = list1.substring(1)
-                            println("----------------------------------------")
-                            println("List1 no quando atingido = ${ list0 }")
-                            println("----------------------------------------")
                             LCD.cursor(line,row)
                             hit = true
+                            Time.sleep(500)
                         }
 
                     }
@@ -154,11 +146,13 @@ object SpaceInvadersApp {
                         LCD.cursor(line,row)
                         LCD.write(key)
                         shootingKey = key
+                        Time.sleep(500)
                     }
                     else{
                         if (key != KBD.NONE){LCD.cursor(line,row)
                             LCD.write(key)
                             shootingKey = key
+                            Time.sleep(500)
                         }
                     }
 
@@ -166,7 +160,7 @@ object SpaceInvadersApp {
             }
 
 
-            Time.sleep(500)
+
 
 
 
