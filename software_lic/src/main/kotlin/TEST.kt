@@ -1,15 +1,9 @@
-
-/*
 import isel.leic.utils.Time
 import java.io.File
 
-
-object SpaceInvadersApp {
-    private const val NAME_FILE = "statistics.txt"
-    private const val INITIAL_DELAY = 3000L
-    private const val SCORE_DISPLAY_TIME = 5000L
-    private const val DISPLAY_WIDTH = 16
-    private const val SCORE_PADDING = 14
+object paceInvadersApp {
+    private var list1: String = ""
+    private var list2: String = ""
 
     fun init() {
         HAL.init()
@@ -17,24 +11,17 @@ object SpaceInvadersApp {
         LCD.init()
         SerialEmitter.init()
         ScoreDisplay.init()
-    }
-
-    fun start(time: Long) {
         LCD.write(" Space Invaders ")
         LCD.cursor(1, 0)
         LCD.write(" Game X  X X  0$ ")
-        Time.sleep(INITIAL_DELAY)
+    }
 
-        while (true) {
-            val text = File(NAME_FILE).readLines()
-            for (i in text) {
-                LCD.cursor(1, 0)
-                LCD.write(" ${i}         ")
-                if (waitForKey(time)) return
-            }
-            if (waitForKey(time)) break
-        }
-        playing()
+    private fun displayBars() {
+        LCD.clear()
+        LCD.cursor(0, 0)
+        LCD.write("]")
+        LCD.cursor(1, 0)
+        LCD.write("]")
     }
 
     fun gameOver(score: Int) {
@@ -44,64 +31,80 @@ object SpaceInvadersApp {
         LCD.cursor(1, 0)
         LCD.write("Score: $score ")
         LCD.cursor(1, 17)
+    }
 
+    fun writeeKey() {
+        var key = KBD.getKey() // Obtem a tecla premida
+        while (list1.length < 14 && list2.length < 14) { // Enquanto a tecla não for '5'...
+            val randomNumber = (0..9).random().toString()
+            val randomLine = (0..1).random()
+            Time.sleep(1000)
+            var keyProcessed = false
+            when (key) {
+                '#' -> {
+                    println("REMOVE")
+                    if (randomLine == 0) {
+                        if (list1.isNotEmpty()) {
+                            list1 = list1.substring(1)
+                            LCD.clear()
+                            TUI.displayWrite(list1, randomLine, list1.length -2)
+                            LCD.cursor(1,list2.length -1)
+                            TUI.displayWrite(list2, randomLine, list2.length -1)
+                            println("List1 (REMOVED) = $list1")
+                        }
+                    } else {
+                        if (list2.isNotEmpty()) {
+                            list2 = list2.substring(1)
+                            LCD.clear()
+                            TUI.displayWrite(list2, randomLine, list2.length - 2)
+
+                            TUI.displayWrite(list1, randomLine, list1.length - 1)
+                            println("List2 (REMOVED) = $list2")
+                        }
+                    }
+                    keyProcessed = true
+                }
+
+                '*' -> {
+                    println("XXXX")
+                    keyProcessed = true
+                }
+
+                else -> {
+                    // Outras teclas não precisam ser processadas
+                }
+            }
+
+            if (!keyProcessed) {
+                if (randomLine == 0) {
+                    // Adiciona o número à lista1 e escreve no display
+                    list1 += randomNumber
+                    TUI.displayWrite(randomNumber, randomLine, list1.length - 1)
+                    println("List1 = $list1")
+                } else {
+                    // Adiciona o número à lista2 e escreve no display
+                    list2 += randomNumber
+                    TUI.displayWrite(randomNumber, randomLine, list2.length - 1)
+                    println("List2 = $list2")
+                }
+            }
+
+            key = KBD.getKey()
+        }
     }
 
     fun playing() {
         LCD.clear()
-        LCD.cursor(0, 0)
-        LCD.write("]")
-        LCD.cursor(1, 0)
-        LCD.write("]")
+        displayBars()
 
-        var list1 = ""
-        var list2 = ""
-
-        while (true) {
-            val randomNumber = (0..9).random()
-            val randomCursor = (0..1).random()
-
-            if (randomCursor == 0) {
-                list1 += randomNumber.toString()
-                if (updateDisplay(list1, 0)) break
-            } else {
-                list2 += randomNumber.toString()
-                if (updateDisplay(list2, 1)) break
-            }
-
-            Time.sleep(500)
+        while (list1.length < 14 && list2.length < 14) {
+            writeeKey()
         }
-        gameOver(122)
-    }
-
-    private fun updateDisplay(list: String, row: Int): Boolean {
-        val paddedList = list.padStart(SCORE_PADDING)
-        LCD.cursor(row, 2)
-        LCD.write(paddedList)
-        return paddedList.trim().length == SCORE_PADDING
-    }
-
-    private fun waitForKey(time: Long): Boolean {
-        var elapsed = 0L
-        val interval = 10L
-        while (elapsed < SCORE_DISPLAY_TIME) {
-            if (KBD.waitKey(1) == '*') {
-                playing()
-                return true
-            }
-            Time.sleep(interval)
-            elapsed += interval
-        }
-        return false
+        gameOver(0)
     }
 }
 
 fun main() {
-    SpaceInvadersApp.init()
-    //SpaceInvadersApp.playing()
-    SpaceInvadersApp.start(0)
-    //SpaceInvadersApp.showInvaders()
-    //SpaceInvadersApp.test()
-    //SpaceInvadersApp.gameOver(144)
+    paceInvadersApp.init()
+    paceInvadersApp.playing()
 }
-*/
