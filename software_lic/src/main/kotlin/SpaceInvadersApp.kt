@@ -84,7 +84,7 @@ object SpaceInvadersApp {
         var shootingKey = ' ' // Inicializa a tecla de tiro
         var hit = false
 
-        val interval = 700L // Intervalo de tempo para gerar novos números aleatórios (700 ms)
+        val interval = 1000L // Intervalo de tempo para gerar novos números aleatórios (700 ms)
         var lastUpdateTime = System.currentTimeMillis() // Marca o tempo da última atualização
 
         // Loop principal do jogo
