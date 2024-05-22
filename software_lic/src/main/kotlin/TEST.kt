@@ -40,6 +40,20 @@ object paceInvadersApp {
             val randomLine = (0..1).random()
             Time.sleep(1000)
             var keyProcessed = false
+
+            if (!keyProcessed) {
+                if (randomLine == 0) {
+                    // Adiciona o número à lista1 e escreve no display
+                    list1 += randomNumber
+                    TUI.displayWrite(randomNumber, randomLine, list1.length - 1)
+                    println("List1 = $list1")
+                } else {
+                    // Adiciona o número à lista2 e escreve no display
+                    list2 += randomNumber
+                    TUI.displayWrite(randomNumber, randomLine, list2.length - 1)
+                    println("List2 = $list2")
+                }
+            }
             when (key) {
                 '#' -> {
                     println("REMOVE")
@@ -75,19 +89,6 @@ object paceInvadersApp {
                 }
             }
 
-            if (!keyProcessed) {
-                if (randomLine == 0) {
-                    // Adiciona o número à lista1 e escreve no display
-                    list1 += randomNumber
-                    TUI.displayWrite(randomNumber, randomLine, list1.length - 1)
-                    println("List1 = $list1")
-                } else {
-                    // Adiciona o número à lista2 e escreve no display
-                    list2 += randomNumber
-                    TUI.displayWrite(randomNumber, randomLine, list2.length - 1)
-                    println("List2 = $list2")
-                }
-            }
 
             key = KBD.getKey()
         }

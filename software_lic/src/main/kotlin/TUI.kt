@@ -1,5 +1,5 @@
-object TUI {
 
+object TUI {
     private var nColUP = 0
     private var nColDOWN = 0
     private var actualColumn = Column.UP
@@ -8,29 +8,16 @@ object TUI {
 
     var col0 = 16
     var col1 = 16
+    fun displayWrite(data: String, line: Int, col: Int) {
+        val maxLength = 16  // A largura máxima do display
+        val startingPosition = maxLength - (col + 1)
 
-    fun write(data:String,pos:Boolean,line:Int,row:Int){
-        if(pos){
-            LCD.cursor(line, row)
-            LCD.write(data)
-            if (line == 0) {
-                col0 = col0 + 1
-            } else {
-                col1 = col1 + 1
-            }
-        }
-        else{
-            LCD.cursor(line, row)
-            LCD.write(data)
-            if (line == 0) {
-                col0 = col0 - 1
-            } else {
-                col1 = col1 - 1
-            }
-        }
-
-
+        LCD.cursor(line, startingPosition)
+        LCD.write(data)
     }
+
+
+
     fun writeKey(time: Long) {
         var temp = KBD.waitKey(time)//Obtem a tecla premida
         while (temp != KBD.NONE) {//Enquando a tecla não for nenhuma...
@@ -66,6 +53,7 @@ object TUI {
     }
 
 }
+
 fun main() {
     HAL.init()
     KBD.init()

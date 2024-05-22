@@ -19,7 +19,6 @@ object LCD{//Escreve no LCD usando a interface a 4 bits
         if (sr == 1){HAL.setBits(RS_MASK)}//Mensagem de dados
         else HAL.clrBits(RS_MASK)//Mensagem de controlo
 
-
         HAL.setBits(E_MASK)              //"Ativa" o enable
 
         val high = data.shr(4)  //Shift para ficarmos só com os 4 bits de maior peso

@@ -30,7 +30,7 @@ object SerialEmitter { // Envia tramas para os diferentes módulos Serial Receiv
                 parity++
                 HAL.setBits(SDX_MASK) //Bit atual dos dados está sendo transmitido.
             } else {
-                HAL.clrBits(SDX_MASK) //bit atual dos dados não vai ser transmitido
+                HAL.clrBits(SDX_MASK) //Bit atual dos dados não vai ser transmitido
             }
 
             HAL.setBits(SCLOCK_MASK) //Dá um Clock
@@ -39,7 +39,7 @@ object SerialEmitter { // Envia tramas para os diferentes módulos Serial Receiv
             bitMask = bitMask shl 1 //Dá shift para verificar o próximo bit
         }
 
-        if (parity % 2 != 0) { //Verifica se a qunatidade de '1's é par ou impar
+        if (parity % 2 != 0) { //Verifica se a quantidade de '1's é par ou impar
             HAL.setBits(SDX_MASK) //Se for impar o bit de paridade é ajustado para 1, para garantir que o número total de '1's seja par na transmissão
         } else {
             HAL.clrBits(SDX_MASK)//Se for par o bit de paridade é ajustado para 0
