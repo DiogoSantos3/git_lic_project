@@ -131,7 +131,7 @@ object SpaceInvadersApp {
 
             Time.sleep(100) // Pequeno delay para não sobrecarregar a CPU
         }
-        gameOver(score) // Exibe a tela de fim de jogo com a pontuação 0
+        gameOver(score * 10) // Exibe a tela de fim de jogo com a pontuação 0
     }
 }
 
