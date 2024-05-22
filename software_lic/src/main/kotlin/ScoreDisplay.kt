@@ -2,59 +2,50 @@ import isel.leic.utils.Time
 
 object ScoreDisplay { // Controla o mostrador de pontuação.
 
-    // Inicia a classe, estabelecendo os valores iniciais.
+    // Inicializa a classe, estabelecendo os valores iniciais.
     fun init() {
-        SerialEmitter.init()
-        off(false)
+        SerialEmitter.init() // Inicializa o emissor serial.
+        off(false) // Liga o display de pontuação.
     }
 
-    // Envia comando para atualizar o valor do mostrador de pontuação
-
-
-    fun setScore(value: Int) { //Não validado
-        val size = value.toString().length //Diz nos o número de digitos de 'value'
+    // Envia comando para atualizar o valor do mostrador de pontuação.
+    fun setScore(value: Int) {
+        // Formata o valor com 5 dígitos, preenchendo com zeros à esquerda.
+        val formattedValue = value.toString().padStart(5, '0')
         var num = 5
-        var count = 0
 
-        while (count < size) {//Itera sobre cada dígito do 'value'.
-
-            val bin = value.toString()[count].digitToInt()//Convertemos o caractere na posição count da string, dá o valor do dígito atual.
-
+        // Itera sobre cada caractere do valor formatado.
+        for (char in formattedValue) {
+            // Converte o caractere em um dígito inteiro.
+            val bin = char.digitToInt()
+            // Calcula o valor binário a ser enviado.
             val vall = bin.shl(3) + num
 
-            SerialEmitter.send(SerialEmitter.Destination.SCORE, vall,7)
-            num--
-            count+=1
+            // Envia o valor binário para o display de pontuação.
+            SerialEmitter.send(SerialEmitter.Destination.SCORE, vall, 7)
+            num-- // Decrementa o número para o próximo dígito.
         }
     }
 
-    // Envia comando para desativar/ativar a visualização do mostrador de pontuação
+    // Envia comando para desativar/ativar a visualização do mostrador de pontuação.
     fun off(value: Boolean) {
+        // Define o comando para ligar ou desligar o display.
         val data = if (value) 0b0001111 else 0b0000111
+        // Envia o comando para o display de pontuação.
         SerialEmitter.send(addr = SerialEmitter.Destination.SCORE, data, 7)
     }
-
 }
+
 fun main() {
-    ScoreDisplay.init()
+    ScoreDisplay.init() // Inicializa o display de pontuação.
 
-    var count = 0
-    var x = 0
-
-
-    while (count != 10){
-        x =1 +  count
-        Time.sleep(1000)
-        ScoreDisplay.setScore(x)
-        SerialEmitter.send(SerialEmitter.Destination.SCORE,0b0000110,7) //Update Display
-
-        count += 1
-
+    // Loop que conta de 0 a 100.
+    for (x in 0..100) {
+        Time.sleep(1000) // Espera 1 segundo entre cada incremento.
+        ScoreDisplay.setScore(x) // Atualiza o display com o valor atual de x.
+        SerialEmitter.send(SerialEmitter.Destination.SCORE, 0b0000110, 7) // Atualiza o display.
     }
 
-
-    Time.sleep(2000)
-    ScoreDisplay.off(true)
-
-
+    Time.sleep(2000) // Espera 2 segundos antes de desligar o display.
+    ScoreDisplay.off(true) // Desliga o display de pontuação.
 }
