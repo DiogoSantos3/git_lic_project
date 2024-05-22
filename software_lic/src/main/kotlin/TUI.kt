@@ -8,14 +8,51 @@ object TUI {
 
     var col0 = 16
     var col1 = 16
-    fun displayWrite(data: String, line: Int, col: Int) {
-        val maxLength = 16  // A largura máxima do display
-        val startingPosition = maxLength - (col + 1)
 
-        LCD.cursor(line, startingPosition)
-        LCD.write(data)
+    // Função para escrever as listas de números no LCD
+    fun displayWrite(list0: String, list2: String, line: Int, row: Int, hit: Boolean) {
+        displayBars() // Exibe as barras no início das linhas
+        val maxLength = 17
+        val startingPosition1 = maxLength - (list0.length + 1)
+        val startingPosition2 = maxLength - (list2.length + 1)
+
+        // Lógica para exibir os números na posição correta, dependendo da linha
+        if (line == 0) {
+            LCD.cursor(line, startingPosition1)
+            LCD.write(list0)
+
+            LCD.cursor(line + 1, startingPosition2)
+            LCD.write(list2)
+
+            // Se um 'hit' ocorrer, limpa a linha e exibe as barras novamente
+            if (hit) {
+                LCD.cursor(line, 1)
+                LCD.write(' ')
+                LCD.clear()
+                displayBars()
+            }
+        } else {
+            LCD.cursor(line - 1, startingPosition1)
+            LCD.write(list0)
+
+            LCD.cursor(line, startingPosition2)
+            LCD.write(list2)
+
+            // Se um 'hit' ocorrer, limpa a linha e exibe as barras novamente
+            if (hit) {
+                LCD.cursor(line, 1)
+                LCD.write(' ')
+                LCD.clear()
+                displayBars()
+            }
+        }
     }
-
+     fun displayBars() {
+        LCD.cursor(0, 0)
+        LCD.write("]")
+        LCD.cursor(1, 0)
+        LCD.write("]")
+    }
 
 
     fun writeKey(time: Long) {

@@ -15,9 +15,9 @@ object ScoreDisplay { // Controla o mostrador de pontuação.
         var num = 5
 
         // Itera sobre cada caractere do valor formatado.
-        for (char in formattedValue) {
+        for (i in formattedValue) {
             // Converte o caractere em um dígito inteiro.
-            val bin = char.digitToInt()
+            val bin = i.digitToInt()
             // Calcula o valor binário a ser enviado.
             val vall = bin.shl(3) + num
 
