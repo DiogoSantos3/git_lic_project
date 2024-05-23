@@ -33,7 +33,6 @@ object SpaceInvadersApp {
     fun addScore(score: Int):Int{
         ScoreDisplay.setScore(score + 1) // Atualiza o display com o valor atual de x.
         SerialEmitter.send(SerialEmitter.Destination.SCORE, 0b0000110, 7) // Atualiza o display.
-        println("${score * 100}")
         return score + 1
     }
 
