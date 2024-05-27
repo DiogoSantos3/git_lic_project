@@ -4,6 +4,16 @@ object SpaceInvadersApp {
     private var list0: String = "" // Lista para armazenar números aleatórios na linha 0
     private var list1: String = "" // Lista para armazenar números aleatórios na linha 1
     private var score : Int = 0
+    private var randomNumber = (0..9).random().toString() // Gera um número aleatório entre 0 e 9
+    private var randomLine = (0..1).random() // Gera uma linha aleatória (0 ou 1)
+
+    private var line = 0
+    private val row = 1
+    private var shootingKey = ' ' // Inicializa a tecla de tiro
+    private var hit = false
+
+    val interval = 1000L // Intervalo de tempo para gerar novos números aleatórios (1000 ms)
+    var lastUpdateTime = System.currentTimeMillis() // Marca o tempo da última atualização (Começo do jogo)
 
     // Função para inicializar os componentes
     fun init() {
@@ -17,11 +27,10 @@ object SpaceInvadersApp {
         LCD.write(" Game X  X X  0$ ") // Escreve uma segunda mensagem na segunda linha do LCD
     }
 
-    // Função para exibir barras nas primeiras posições das duas linhas
 
 
-    // Função para exibir a mensagem de fim de jogo
-    fun gameOver(score: Int) {
+
+    fun gameOver(score: Int) {// Função para exibir a mensagem de fim de jogo
         LCD.clear() // Limpa o LCD
         LCD.cursor(0, 0)
         LCD.write("*** GAME OVER **") // Mensagem de fim de jogo na primeira linha
@@ -37,7 +46,6 @@ object SpaceInvadersApp {
     }
 
     private fun addInvaders(randomLine:Int, randomNumber:String, hit:Boolean){
-
         if (randomLine == 0) {
             list0 += randomNumber
             TUI.displayWrite(list0, list1, randomLine, 1, hit)
@@ -47,26 +55,17 @@ object SpaceInvadersApp {
         }
     }
 
+
     // Função principal do jogo
     fun playing() {
 
         TUI.displayBars() // Exibe as barras no início das linhas
-        var randomNumber = (0..9).random().toString() // Gera um número aleatório entre 0 e 9
-        var randomLine = (0..1).random() // Gera uma linha aleatória (0 ou 1)
+        TUI.showGun(line,row)
 
-        var line = 0
-        val row = 1
-        var shootingKey = ' ' // Inicializa a tecla de tiro
-        var hit = false
 
-        val interval = 1000L // Intervalo de tempo para gerar novos números aleatórios (700 ms)
-        var lastUpdateTime = System.currentTimeMillis() // Marca o tempo da última atualização (Começo do jogo)
-
-        // Loop principal do jogo
-        while (list0.length < 14 && list1.length <14) {
+        while (list0.length < 14 && list1.length <14) {// Loop principal do jogo
 
             val currentTime = System.currentTimeMillis() //Tempo atual
-
 
             // Verifica se o intervalo de tempo foi atingido, ou seja, se já passou 1 segundo
             if (currentTime - lastUpdateTime >= interval) {
@@ -81,13 +80,17 @@ object SpaceInvadersApp {
                 lastUpdateTime = currentTime // Atualiza o tempo da última atualização
             }
 
-            val key = KBD.getKey() // Verifica se alguma tecla foi pressionada
-
-            when (key) {// Lida com a tecla pressionada
+            when (val key = KBD.getKey()) { // Verifica se alguma tecla foi pressionada// Lida com a tecla pressionada
 
                 '*' -> {//Verifica se queremos mudar de linha do cursor
+
+                    LCD.cursor(line,row)
+                    LCD.write(" ")
+
                     line = if (line == 0) 1 else 0 // Alterna entre as linhas 0 e 1
+                    TUI.showGun(line, row)
                     LCD.cursor(line, row)
+
                 }
 
                 '#' -> {//Verifica se matou um invader
@@ -110,11 +113,12 @@ object SpaceInvadersApp {
 
                 else -> {// Exibe a tecla pressionada no LCD
                     if (line == 0 && key != KBD.NONE) {
-                        LCD.cursor(line, row)
+                        LCD.cursor(line, 0)
                         LCD.write(key)
                         shootingKey = key
+
                     } else if (key != KBD.NONE) {
-                        LCD.cursor(line, row)
+                        LCD.cursor(line, 0)
                         LCD.write(key)
                         shootingKey = key
                     }

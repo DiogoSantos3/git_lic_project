@@ -8,10 +8,14 @@ object TUI {
 
     var col0 = 16
     var col1 = 16
+    fun showGun(line:Int,row:Int){
+        LCD.cursor(line,row)
+        LCD.write(">")
+    }
 
     // Função para escrever as listas de números no LCD
     fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
-        displayBars() // Exibe as barras no início das linhas
+
         val maxLength = 17
         val startingPosition0 = maxLength - (list0.length + 1)
         val startingPosition1 = maxLength - (list1.length + 1)
@@ -20,7 +24,6 @@ object TUI {
         if (hit) {
             if (line == 0) {
 
-                LCD.write(' ')
                 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 LCD.clear()
                 displayBars()
@@ -33,7 +36,6 @@ object TUI {
 
             } else {
 
-                LCD.write(' ')
                 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 LCD.clear()
                 displayBars()
@@ -43,6 +45,7 @@ object TUI {
                 LCD.cursor(1, startingPosition1)
                 LCD.write(list1)
             }
+            showGun(line, row)
         }
 
         else{// Atualiza ambas as linhas independentemente da linha atual
@@ -58,10 +61,12 @@ object TUI {
 
 
     fun displayBars() {
+
         LCD.cursor(0, 0)
         LCD.write("]")
         LCD.cursor(1, 0)
         LCD.write("]")
+
     }
 
 

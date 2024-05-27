@@ -70,6 +70,25 @@ object LCD{//Escreve no LCD usando a interface a 4 bits
         clear()
         cursor(0, 0)
     }
+    /**
+    fun init() {
+
+    writeCMD(0b00110000)// Function set: Interface is 8 bits long (00110000 in binary)
+    Time.sleep(15)// Wait
+    writeCMD(0b00110000)// Function set: Repeated to ensure the LCD is properly initialized (00110000 in binary)
+    Time.sleep(1)// Wait
+    writeCMD(0b00110000)// Function set: Repeated to ensure the LCD is properly initialized (00110000 in binary)
+    writeCMD(0b00111000)// Function set: Interface is 8 bits long, 2 lines, 5x8 dots (00111000 in binary)
+    writeCMD(0b00001000)// Display off: Turn off display (00001000 in binary)
+    writeCMD(0b00000001)// Display clear: Clear display and set DDRAM address to 0 (00000001 in binary)
+    writeCMD(0b00000110)// Entry mode set: Increment mode, no display shift (00000110 in binary)
+    writeCMD(0b00001111)// Display on/off control: Display on, cursor on, blink on (00001111 in binary)
+    clear()// Clear display (this is redundant here as we already cleared the display above, but included for completeness)
+    cursor(0, 0)// Set cursor to home position (0, 0)
+    }
+
+     */
+
 
     //Escreve um caráter na posição corrente
     fun write(c:Char){writeDATA(c.code)}
