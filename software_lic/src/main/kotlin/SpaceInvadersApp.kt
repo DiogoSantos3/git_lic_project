@@ -26,15 +26,24 @@ object SpaceInvadersApp {
     }
 
     fun displayStatistics() {
-        // Criar uma lista de pares (nome, pontuação)
-        val scores = text.map {
-            val (name, score) = it.split(";")
-            name to score.toInt()
-        }.sortedByDescending { it.second } // Ordenar pela pontuação em ordem decrescente
+        // Criar uma lista de pares (nome, pontuação) sem usar .map
+        val statistics = mutableListOf<Pair<String, Int>>()
+
+        for (entry in text) {
+            val parts = entry.split(";")
+            val name = parts[0]
+            val score = parts[1].toInt()
+
+            statistics.add(Pair(name, score))
+        }
+
+        // Ordenar pela pontuação em ordem decrescente
+        statistics.sortByDescending { it.second }
 
         var position = 1
 
-        for ((name, score) in scores) {
+        // Exibir cada par (nome, pontuação)
+        for ((name, score) in statistics) {
             isCoin()
             if (KBD.getKey() == '*') {
                 LCD.clear()
@@ -47,6 +56,8 @@ object SpaceInvadersApp {
             Time.sleep(1000)
         }
     }
+
+
 
     // Função para inicializar os componentes
     fun init() {
