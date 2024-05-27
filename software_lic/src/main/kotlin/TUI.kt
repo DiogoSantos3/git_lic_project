@@ -47,6 +47,8 @@ object TUI {
             }
         }
     }
+
+
      fun displayBars() {
         LCD.cursor(0, 0)
         LCD.write("]")

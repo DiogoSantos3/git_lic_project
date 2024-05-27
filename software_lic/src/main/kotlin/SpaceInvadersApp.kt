@@ -36,7 +36,16 @@ object SpaceInvadersApp {
         return score + 1
     }
 
+    private fun addInvaders(randomLine:Int, randomNumber:String, hit:Boolean){
 
+        if (randomLine == 0) {
+            list0 += randomNumber
+            TUI.displayWrite(list0, list1, randomLine, 1, hit)
+        } else {
+            list1 += randomNumber
+            TUI.displayWrite(list0, list1, randomLine, 1, hit)
+        }
+    }
 
     // Função principal do jogo
     fun playing() {
@@ -67,22 +76,15 @@ object SpaceInvadersApp {
                 hit = false
 
                 // Adiciona o número aleatório à linha correspondente
-                if (randomLine == 0) {
-                    list0 += randomNumber
-                    TUI.displayWrite(list0, list1, randomLine, 1, hit)
-                } else {
-                    list1 += randomNumber
-                    TUI.displayWrite(list0, list1, randomLine, 1, hit)
-                }
+
+                addInvaders(randomLine,randomNumber,hit)
 
                 lastUpdateTime = currentTime // Atualiza o tempo da última atualização
             }
+
             val key = KBD.getKey() // Verifica se alguma tecla foi pressionada
 
-
-
-            // Lida com a tecla pressionada
-            when (key) {
+            when (key) {// Lida com a tecla pressionada
 
                 '*' -> {//Verifica se queremos mudar de linha do cursor
                     line = if (line == 0) 1 else 0 // Alterna entre as linhas 0 e 1
@@ -90,23 +92,16 @@ object SpaceInvadersApp {
                 }
 
                 '#' -> {//Verifica se matou um invader
-
-                    // Verifica se há um 'hit' na linha 0
-                    if (line == 0) {
+                    if (line == 0) {// Verifica se há um 'hit' na linha 0
                         if (list0.isNotEmpty() && shootingKey == list0[0]) {
-
                             score = addScore(score)
-                            //SCORE
                             list0 = list0.substring(1) // Remove o primeiro número da lista
                             LCD.cursor(line, row)
                             hit = true
                         }
-                    } else {
-                        // Verifica se há um 'hit' na linha 1
+                    } else {// Verifica se há um 'hit' na linha 1
                         if (list1.isNotEmpty() && shootingKey == list1[0]) {
-
                             score = addScore(score)
-                            //SCORE
                             list1 = list1.substring(1) // Remove o primeiro número da lista
                             LCD.cursor(line, row)
                             hit = true
@@ -114,8 +109,7 @@ object SpaceInvadersApp {
                     }
                 }
 
-                else -> {
-                    // Exibe a tecla pressionada no LCD
+                else -> {// Exibe a tecla pressionada no LCD
                     if (line == 0 && key != KBD.NONE) {
                         LCD.cursor(line, row)
                         LCD.write(key)
@@ -127,12 +121,13 @@ object SpaceInvadersApp {
                     }
                 }
             }
-
             Time.sleep(100) // Pequeno delay para não sobrecarregar a CPU
         }
         gameOver(score * 10) // Exibe a tela de fim de jogo com a pontuação 0
     }
 }
+
+
 
 // Função principal para iniciar o jogo
 fun main() {
