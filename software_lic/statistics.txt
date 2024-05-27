@@ -1,3 +1,6 @@
-01;test1;xxx
-02;test2;yyy
-03;test3;zzz
+Carlos;20
+Pedro;120
+Diogo;32
+Miguel;56
+Joao;12
+Tiago;70
