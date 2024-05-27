@@ -67,6 +67,7 @@ object SpaceInvadersApp {
 
             val currentTime = System.currentTimeMillis() //Tempo atual
 
+
             // Verifica se o intervalo de tempo foi atingido, ou seja, se já passou 1 segundo
             if (currentTime - lastUpdateTime >= interval) {
                 randomLine = (0..1).random()
@@ -75,10 +76,8 @@ object SpaceInvadersApp {
                 TUI.displayWrite(list0, list1, line, 1, hit) // Atualiza o display com os números atuais
                 hit = false
 
-                // Adiciona o número aleatório à linha correspondente
 
-                addInvaders(randomLine,randomNumber,hit)
-
+                addInvaders(randomLine,randomNumber,hit)//Adiciona o número aleatório à linha correspondente (Adiciona um invader)
                 lastUpdateTime = currentTime // Atualiza o tempo da última atualização
             }
 
@@ -96,15 +95,15 @@ object SpaceInvadersApp {
                         if (list0.isNotEmpty() && shootingKey == list0[0]) {
                             score = addScore(score)
                             list0 = list0.substring(1) // Remove o primeiro número da lista
-                            LCD.cursor(line, row)
                             hit = true
+                            TUI.displayWrite(list0, list1, line, 1, hit) // Atualiza o display com os números atuais
                         }
                     } else {// Verifica se há um 'hit' na linha 1
                         if (list1.isNotEmpty() && shootingKey == list1[0]) {
                             score = addScore(score)
                             list1 = list1.substring(1) // Remove o primeiro número da lista
-                            LCD.cursor(line, row)
                             hit = true
+                            TUI.displayWrite(list0, list1, line, 1, hit) // Atualiza o display com os números atuais
                         }
                     }
                 }

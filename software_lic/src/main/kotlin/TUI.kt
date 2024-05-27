@@ -10,46 +10,56 @@ object TUI {
     var col1 = 16
 
     // Função para escrever as listas de números no LCD
-    fun displayWrite(list0: String, list2: String, line: Int, row: Int, hit: Boolean) {
+    fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
         displayBars() // Exibe as barras no início das linhas
         val maxLength = 17
-        val startingPosition1 = maxLength - (list0.length + 1)
-        val startingPosition2 = maxLength - (list2.length + 1)
+        val startingPosition0 = maxLength - (list0.length + 1)
+        val startingPosition1 = maxLength - (list1.length + 1)
 
-        // Lógica para exibir os números na posição correta, dependendo da linha
-        if (line == 0) {
-            LCD.cursor(line, startingPosition1)
-            LCD.write(list0)
+        // Se um 'hit' ocorrer, limpa apenas a posição do hit e reexibe a linha
+        if (hit) {
+            if (line == 0) {
 
-            LCD.cursor(line + 1, startingPosition2)
-            LCD.write(list2)
-
-            // Se um 'hit' ocorrer, limpa a linha e exibe as barras novamente
-            if (hit) {
                 LCD.cursor(line, 1)
                 LCD.write(' ')
+                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 LCD.clear()
                 displayBars()
-            }
-        } else {
-            LCD.cursor(line - 1, startingPosition1)
-            LCD.write(list0)
+                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-            LCD.cursor(line, startingPosition2)
-            LCD.write(list2)
+                LCD.cursor(0, startingPosition0)
+                LCD.write(list0)
+                LCD.cursor(1, startingPosition1)
+                LCD.write(list1)
 
-            // Se um 'hit' ocorrer, limpa a linha e exibe as barras novamente
-            if (hit) {
+            } else {
+
                 LCD.cursor(line, 1)
                 LCD.write(' ')
+                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 LCD.clear()
                 displayBars()
+                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                LCD.cursor(0, startingPosition0)
+                LCD.write(list0)
+                LCD.cursor(1, startingPosition1)
+                LCD.write(list1)
             }
         }
+
+        else{// Atualiza ambas as linhas independentemente da linha atual
+            LCD.cursor(0, startingPosition0)
+            LCD.write(list0)
+            LCD.cursor(1, startingPosition1)
+            LCD.write(list1)}
+
+
+
     }
 
 
-     fun displayBars() {
+
+    fun displayBars() {
         LCD.cursor(0, 0)
         LCD.write("]")
         LCD.cursor(1, 0)
