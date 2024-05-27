@@ -56,7 +56,7 @@ object LCD{//Escreve no LCD usando a interface a 4 bits
 
     //Envia a sequencia de iniciação para a comunicação 4 bits (?)
     fun init(){
-
+        SerialEmitter.init()
         writeCMD(0b00110000)
         Time.sleep(15)
         writeCMD(0b00110000)

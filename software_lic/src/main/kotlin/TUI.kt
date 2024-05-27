@@ -8,10 +8,16 @@ object TUI {
 
     var col0 = 16
     var col1 = 16
+
+    fun init(){
+        LCD.init()
+        KBD.init()
+    }
     fun showGun(line:Int,row:Int){
         LCD.cursor(line,row)
         LCD.write(">")
     }
+
 
     // Função para escrever as listas de números no LCD
     fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
@@ -53,11 +59,14 @@ object TUI {
             LCD.write(list0)
             LCD.cursor(1, startingPosition1)
             LCD.write(list1)}
-
-
-
     }
-
+    fun gameOver(score: Int) { // Função para exibir a mensagem de fim de jogo
+        LCD.clear() // Limpa o LCD
+        LCD.cursor(0, 0)
+        LCD.write("*** GAME OVER **") // Mensagem de fim de jogo na primeira linha
+        LCD.cursor(1, 0)
+        LCD.write("Score: $score ") // Exibe a pontuação na segunda linha
+    }
 
 
     fun displayBars() {
