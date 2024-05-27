@@ -20,7 +20,6 @@ object TUI {
         if (hit) {
             if (line == 0) {
 
-                LCD.cursor(line, 1)
                 LCD.write(' ')
                 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 LCD.clear()
@@ -34,7 +33,6 @@ object TUI {
 
             } else {
 
-                LCD.cursor(line, 1)
                 LCD.write(' ')
                 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 LCD.clear()
