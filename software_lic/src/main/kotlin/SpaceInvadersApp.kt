@@ -2,9 +2,13 @@ import isel.leic.utils.Time
 import java.io.File
 
 object SpaceInvadersApp {
-    const val NAME_FILE = "statistics.txt"
+    private const val NAME_FILE = "statistics.txt"
+    private val text = File(NAME_FILE).readLines()
+
     private var list0: String = "" // Lista para armazenar números aleatórios na linha 0
     private var list1: String = "" // Lista para armazenar números aleatórios na linha 1
+    private val statistics = mutableListOf<Pair<String, Int>>()//Lista de pares (nome, pontuação)
+
     private var score: Int = 0
     private var coin: Int = 0
     private var randomNumber = (0..9).random().toString() // Gera um número aleatório entre 0 e 9
@@ -13,10 +17,13 @@ object SpaceInvadersApp {
     private const val row = 1
     private var shootingKey = ' ' // Inicializa a tecla de tiro
     private var hit = false
+
     private const val interval = 1000L // Intervalo de tempo para gerar novos números aleatórios (1000 ms)
     private var lastUpdateTime = System.currentTimeMillis() // Marca o tempo da última atualização (Começo do jogo)
+
     var COIN_MASK = 0x40
-    val text = File(SpaceInvadersApp.NAME_FILE).readLines()
+
+
 
     fun isCoin(){
         if (HAL.isBit(COIN_MASK)){
@@ -26,18 +33,16 @@ object SpaceInvadersApp {
     }
 
     fun displayStatistics() {
-        // Criar uma lista de pares (nome, pontuação) sem usar .map
-        val statistics = mutableListOf<Pair<String, Int>>()
 
-        for (entry in text) {
+        for (entry in text) { //Percorrer todas as linhas do ficheiro
             val parts = entry.split(";")
             val name = parts[0]
             val score = parts[1].toInt()
-
             statistics.add(Pair(name, score))
+
         }
 
-        // Ordenar pela pontuação em ordem decrescente
+        // Ordenar score (second) em ordem decrescente
         statistics.sortByDescending { it.second }
 
         var position = 1
@@ -51,7 +56,7 @@ object SpaceInvadersApp {
                 return
             }
             LCD.cursor(1, 0)
-            LCD.write(" $position $name $score           ")
+            LCD.write("$position-$name    $score     ")
             position++
             Time.sleep(1000)
         }
