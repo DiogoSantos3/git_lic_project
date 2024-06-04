@@ -1,25 +1,87 @@
+import isel.leic.utils.Time
+import java.io.File
 
 object TUI {
     private var nColUP = 0
     private var nColDOWN = 0
     private var actualColumn = Column.UP
-
+    var COIN_MASK = 0x40
+    private const val NAME_FILE = "statistics.txt"
+    private val text = File(NAME_FILE).readLines()
+    private  var num_of_players = text.count()
+    private val statistics = mutableListOf<Pair<String, Int>>()//Lista de pares (nome, pontuação)
     enum class Column { UP, DOWN }
+     var coin: Int = 0
+    var lastState : Boolean = false
 
-    var col0 = 16
-    var col1 = 16
+    public class Cursor(val line: Int = 0,val row: Int = 1){
+        fun write(line: Int,row: Int,word:String){
+            LCD.cursor(line,row)
+            LCD.write(word) // Escreve a mensagem inicial na primeira linha do
+        }
+
+    }
+
+
+    fun isCoin():Boolean{
+
+        if(HAL.isBit(COIN_MASK)){
+            if (!lastState){
+                coin += 1
+                println("${coin}")
+                HAL.setBits(COIN_MASK)
+            }
+            HAL.clrBits(COIN_MASK)
+
+            return true
+        }
+
+        return false
+    }
+
+    fun displayStatistics() {
+
+        statistics.clear()
+
+        for (entry in text) {
+            val parts = entry.split(";")
+            if (parts.size != 2) continue
+
+            val name = parts[0]
+            val score = parts[1].toInt()
+            statistics.add(Pair(name, score))
+        }
+        statistics.sortByDescending { it.second }// Ordenar score (second) em ordem decrescente
+
+        var position = 1
+
+        for ((name, score) in statistics) {// Exibir cada par (nome, pontuação)
+
+            if (KBD.getKey() == '*') {
+                LCD.clear()
+                SpaceInvadersApp.playing()
+                return
+            }
+            LCD.cursor(1, 0)
+            LCD.write("$position-$name    $score     ")
+            if (num_of_players == position){position = 0}
+            position++
+            Time.sleep(1000)
+        }
+    }
 
     fun init(){
         LCD.init()
         KBD.init()
     }
+
     fun showGun(line:Int,row:Int){
         LCD.cursor(line,row)
         LCD.write(">")
     }
 
+    val cursor = Cursor()
 
-    // Função para escrever as listas de números no LCD
     fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
 
         val maxLength = 17
@@ -35,10 +97,12 @@ object TUI {
                 displayBars()
                 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-                LCD.cursor(0, startingPosition0)
-                LCD.write(list0)
-                LCD.cursor(1, startingPosition1)
-                LCD.write(list1)
+                cursor.write(0,startingPosition0,list0)
+                //LCD.cursor(0, startingPosition0)
+                //LCD.write(list0)
+                cursor.write(1,startingPosition1,list1)
+                //LCD.cursor(1, startingPosition1)
+                //LCD.write(list1)
 
             } else {
 
@@ -46,10 +110,12 @@ object TUI {
                 LCD.clear()
                 displayBars()
                 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                LCD.cursor(0, startingPosition0)
-                LCD.write(list0)
-                LCD.cursor(1, startingPosition1)
-                LCD.write(list1)
+                cursor.write(0,startingPosition0,list0)
+                //LCD.cursor(0, startingPosition0)
+                //LCD.write(list0)
+                cursor.write(1,startingPosition1,list1)
+                //LCD.cursor(1, startingPosition1)
+                //LCD.write(list1)
             }
             showGun(line, row)
         }
@@ -68,7 +134,6 @@ object TUI {
         LCD.write("Score: $score ") // Exibe a pontuação na segunda linha
     }
 
-
     fun displayBars() {
 
         LCD.cursor(0, 0)
@@ -77,7 +142,6 @@ object TUI {
         LCD.write("]")
 
     }
-
 
     fun writeKey(time: Long) {
         var temp = KBD.waitKey(time)//Obtem a tecla premida

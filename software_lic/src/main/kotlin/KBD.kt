@@ -4,9 +4,9 @@ import isel.leic.utils.Time
 
 object KBD {//Ler teclas. Métodos retornam ‘0’..’9’,’#’,’*’ ou NONE.
 
-    const val KEY = 0X0F       //kbd.K[0-3] -> UsbPort.I[0-3]
-    const val KACK_MASK = 0X80 //UsbPort.O7 -> kbd.ack
-    const val KVAL_MASK = 0X10 //kbd.val -> UsbPort.I4
+    const val KEY = 0X0F        //kbd.K[0-3] -> UsbPort.I[0-3]
+    const val KACK_MASK = 0X80  //UsbPort.O7 -> kbd.ack
+    const val KVAL_MASK = 0X10  //kbd.val -> UsbPort.I4
     const val NONE = ' '
     val keys: CharArray = charArrayOf('1', '4', '7', '*', '2', '5', '8', '0', '3', '6', '9', '#') //Keys on keyboard
 

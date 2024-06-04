@@ -25,6 +25,7 @@ object ScoreDisplay { // Controla o mostrador de pontuação.
             SerialEmitter.send(SerialEmitter.Destination.SCORE, vall, 7)
             num-- // Decrementa o número para o próximo dígito.
         }
+        SerialEmitter.send(SerialEmitter.Destination.SCORE, 0b0000110, 7) // Atualiza o display.
     }
 
     // Envia comando para desativar/ativar a visualização do mostrador de pontuação.

@@ -3,13 +3,11 @@ import isel.leic.utils.Time
 
 object LCD{//Escreve no LCD usando a interface a 4 bits
 
-    private const val LINES = 2                 //Dimensão do display - LINES
-    private const val COLS = 16                 ////Dimensão do display - COLUMNS
     private const val SERIAL_INTERFACE = true
     private const val E_MASK = 0x20            //UsbPort.O5 -> lcd.e
     private const val RS_MASK = 0x10           //UsbPort.O4 -> lcd.rs
-    const val CLK_REG_MASK = 0x40              //UsbPort.O6 -> regLow.clk, regHigh.clk
-    private const val DATA_MASK = 0x0F
+    private const val CLK_REG_MASK = 0x40      //UsbPort.O6 -> regLow.clk, regHigh.clk
+    private const val DATA_MASK = 0x0F          //UsbPort.O[0-3] -> regLow.in[0-3]
 
     //Escreve um byte de comandos/dados no LCD em paralelo
     private fun writeByteParallel(rs: Boolean, data: Int) {
@@ -23,7 +21,7 @@ object LCD{//Escreve no LCD usando a interface a 4 bits
 
         val high = data.shr(4)  //Shift para ficarmos só com os 4 bits de maior peso
 
-        HAL.writeBits(DATA_MASK, high)   //Escreve os 4 bits de maior peso (?)
+        HAL.writeBits(DATA_MASK, high)   //Escreve os 4 bits de maior peso, no reg low
         HAL.setBits(CLK_REG_MASK)        //Clock1
         HAL.clrBits(CLK_REG_MASK)        //Clock1
 
