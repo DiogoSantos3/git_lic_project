@@ -15,10 +15,13 @@ object TUI {
     enum class Column { UP, DOWN }
     private var coin: Int = 0
     private var lastState : Boolean = false
-    private var cursor = Cursor()
+    var cursor = Cursor()
     private var shootingKey = ' ' // Inicializa a tecla de tiro
     var score: Int = 0
     private var hit = false
+    public var bestScore : Int = 0
+
+
     class Cursor(val line: Int = 0,val row: Int = 1){
         fun write(line: Int,row: Int,word:String){
             LCD.cursor(line,row)
@@ -32,38 +35,10 @@ object TUI {
             cursor.write(0,0,"]")
             cursor.write(1,0,"]")
         }
-
-    }
-    private fun splitStatistics(){
-
-        statistics.clear() //Limpa a lista de estatísticas antes de começar a preencher novamente
-
-        for (entry in text) { //Processa cada entrada de texto para extrair nome e pontuação
-            val parts = entry.split(";") // Divide a string
-            val name = parts[0]
-            val score = parts[1].toInt()
-            statistics.add(Pair(name, score)) //Add Pair(name, score) à lista (statistics)
+        fun initialDisplay(){
+            cursor.write(0,1,"Space Invaders ")//SAIUBDGIWUBA
+            cursor.write(1,0," Game X  X X  ${coin}$    ")//SAIUBDGIWUBA
         }
-
-        statistics.sortByDescending { it.second }//Ordena a lista por ordem decrescente
-    }
-    fun isCoin():Boolean{
-
-        if(HAL.isBit(COIN_MASK)){
-            if (!lastState){
-                coin += 2
-                println("${coin}")
-                HAL.setBits(COIN_MASK)
-            }
-            HAL.clrBits(COIN_MASK)
-            if (coin<=9){cursor.write(1,0," Game X  X X  ${coin}$    ")}
-            else{cursor.write(1,0," Game X  X X ${coin}$    ")}
-
-            return true
-
-        }
-
-        return false
     }
     fun displayStatistics(readyToPlay:Boolean):Boolean {
 
@@ -102,20 +77,32 @@ object TUI {
         }
         return false
     }
+    private fun splitStatistics(){
 
-    private fun newScore(){
-        LCD.clear()
-        cursor.write(0,0,"IUDWIUAHDIUWAHUDI")
-        cursor.write(1,0,"IUDWIUAHDIUWAHUDI")
+        statistics.clear() //Limpa a lista de estatísticas antes de começar a preencher novamente
+
+        for (entry in text) { //Processa cada entrada de texto para extrair nome e pontuação
+            val parts = entry.split(";") // Divide a string
+            val name = parts[0]
+            val score = parts[1].toInt()
+            statistics.add(Pair(name, score)) //Add Pair(name, score) à lista (statistics)
+        }
+
+        statistics.sortByDescending { it.second }//Ordena a lista por ordem decrescente
+        bestScore = statistics.first().second
 
     }
     fun init(){
         LCD.init()
         KBD.init()
     }
-
-
-
+    fun handleKeyPress() {
+        when (val key : Char = KBD.getKey()) {
+            '*' -> changeLine()
+            '#' -> checkHit()
+            else -> displayKey(key)
+        }
+    }
     private fun checkHit() {
 
         if (cursor.line == 0 && list0.isNotEmpty() && shootingKey == list0[0]) {
@@ -129,14 +116,6 @@ object TUI {
             displayWrite(list0,  list1, cursor.line, 1, hit = true)
         }
     }
-    fun addInvaders(randomLine: Int, randomNumber: String) {
-        if (randomLine == 0) {
-            list0 += randomNumber
-        } else {
-            list1 += randomNumber
-        }
-        displayWrite(list0, list1, randomLine, 1, hit)
-    }
     private fun changeLine() {
 
         var linee = cursor.line
@@ -145,19 +124,19 @@ object TUI {
         cursor.showGun(linee, cursor.row)
         cursor = Cursor(linee,cursor.row)
     }
-
-    fun handleKeyPress() {
-        when (val key : Char = KBD.getKey()) {
-            '*' -> changeLine()
-            '#' -> checkHit()
-            else -> displayKey(key)
-        }
-    }
     private fun displayKey(key: Char) {
         if (key != KBD.NONE) {
             cursor.write(cursor.line, 0,key.toString())
             shootingKey = key
         }
+    }
+    fun addInvaders(randomLine: Int, randomNumber: String) {
+        if (randomLine == 0) {
+            list0 += randomNumber
+        } else {
+            list1 += randomNumber
+        }
+        displayWrite(list0, list1, randomLine, 1, hit)
     }
     private fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
 
@@ -168,22 +147,15 @@ object TUI {
         // Se um 'hit' ocorrer, limpa apenas a posição do hit e reexibe a linha
         if (hit) {
             if (line == 0) {
-
                 LCD.clear()//XXXXXXXXX
                 cursor.displayBars()//XXXXXXXXX
-
                 cursor.write(0,startingPosition0,list0)
-
                 cursor.write(1,startingPosition1,list1)
-
-
-            } else {
-
+            }
+            else {
                 LCD.clear()//XXXXXXXXX
                 cursor.displayBars()//XXXXXXXXX
-
                 cursor.write(0,startingPosition0,list0)
-
                 cursor.write(1,startingPosition1,list1)
 
             }
@@ -193,30 +165,41 @@ object TUI {
         else{// Atualiza ambas as linhas independentemente da linha atual
             cursor.write(0,startingPosition0,list0)
             cursor.write(1,startingPosition1,list1)
-
             }
     }
-
     fun readyToPlay():Boolean{
         return KBD.getKey() == '*' && coin >= 2
     }
-
-
     fun gameOver(score: Int,newScore:Boolean) { // Função para exibir a mensagem de fim de jogo
 
         if (newScore){ newScore()}
         else{
             LCD.clear() // Limpa o LCD
             cursor.write(0,0,"*** GAME OVER **")
-            cursor.write(1,0,"Score: $score            ")}
+            cursor.write(1,0,"Score: ${score*10}            ")}
     }
+    fun isCoin():Boolean{
 
+        if(HAL.isBit(COIN_MASK)){
+            if (!lastState){
+                coin += 2
+                println("${coin}")
+                HAL.setBits(COIN_MASK)
+            }
+            HAL.clrBits(COIN_MASK)
+            if (coin<=9){cursor.write(1,0," Game X  X X  ${coin}$    ")}
+            else{cursor.write(1,0," Game X  X X ${coin}$    ")}
 
+            return true
 
-    fun initialDisplay(){
-        cursor.write(0,1,"Space Invaders ")//SAIUBDGIWUBA
-        cursor.write(1,0," Game X  X X  ${coin}$    ")//SAIUBDGIWUBA
+        }
 
+        return false
+    }
+    private fun newScore(){
+        LCD.clear()
+        cursor.write(0,0,"IUDWIUAHDIUWAHUDI")
+        cursor.write(1,0,"IUDWIUAHDIUWAHUDI")
 
     }
     fun writeKey(time: Long) {
@@ -252,7 +235,6 @@ object TUI {
         }
 
     }
-
 }
 
 fun main() {

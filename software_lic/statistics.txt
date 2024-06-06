@@ -1,5 +1,5 @@
 Carlos;20
-Pedro;120
+Pedro;55
 Diogo;32
 Miguel;56
 Joao;12
