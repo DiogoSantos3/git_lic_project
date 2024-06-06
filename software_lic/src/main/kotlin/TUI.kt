@@ -2,31 +2,36 @@ import isel.leic.utils.Time
 import java.io.File
 
 object TUI {
+    var list0: String = "" // Lista para armazenar números aleatórios na linha 0
+    var list1: String = "" // Lista para armazenar números aleatórios na linha 1
     private var nColUP = 0
     private var nColDOWN = 0
     private var actualColumn = Column.UP
-    var COIN_MASK = 0x40
+    private var COIN_MASK = 0x40
     private const val NAME_FILE = "statistics.txt"
     private val text = File(NAME_FILE).readLines()
     private  var num_of_players = text.count()
     private val statistics = mutableListOf<Pair<String, Int>>()//Lista de pares (nome, pontuação)
     enum class Column { UP, DOWN }
-    var coin: Int = 0
-    var lastState : Boolean = false
-    var cursor = Cursor()
-    var shootingKey = ' ' // Inicializa a tecla de tiro
+    private var coin: Int = 0
+    private var lastState : Boolean = false
+    private var cursor = Cursor()
+    private var shootingKey = ' ' // Inicializa a tecla de tiro
     var score: Int = 0
-    var hit = false
+    private var hit = false
     class Cursor(val line: Int = 0,val row: Int = 1){
         fun write(line: Int,row: Int,word:String){
             LCD.cursor(line,row)
             LCD.write(word) // Escreve a mensagem inicial na primeira linha do
         }
+        fun showGun(line:Int,row:Int){
+            cursor.write(line,row,">")
+        }
 
     }
     private fun splitStatistics(){
-        statistics.clear() //Limpa a lista de estatísticas antes de começar a preencher novamente
 
+        statistics.clear() //Limpa a lista de estatísticas antes de começar a preencher novamente
 
         for (entry in text) { //Processa cada entrada de texto para extrair nome e pontuação
             val parts = entry.split(";") // Divide a string
@@ -41,7 +46,7 @@ object TUI {
 
         if(HAL.isBit(COIN_MASK)){
             if (!lastState){
-                coin += 1
+                coin += 2
                 println("${coin}")
                 HAL.setBits(COIN_MASK)
             }
@@ -55,9 +60,9 @@ object TUI {
 
         return false
     }
-    fun displayStatistics(playing:Boolean):Boolean {
+    fun displayStatistics(readyToPlay:Boolean):Boolean {
 
-        if(!playing){
+        if(!readyToPlay){
 
             splitStatistics()
 
@@ -67,7 +72,7 @@ object TUI {
 
                 isCoin()
 
-                if (KBD.getKey() == '*' && coin >= 2) {//Verifica se queremos iniciar o jogo
+                if (readyToPlay()) {//Verifica se queremos iniciar o jogo
                     LCD.clear() // Limpa o display LCD
                     SpaceInvadersApp.playing() // Inicia o jogo
                     return true// Sai da função
@@ -85,7 +90,6 @@ object TUI {
 
                 // Loop para verificação de moedas durante a espera
                 for (i in 1..10) {
-
                     isCoin()
                     Time.sleep(200)// Espera 200 ms antes de próxima verificação
                 }
@@ -94,7 +98,7 @@ object TUI {
         return false
     }
 
-    fun newScore(){
+    private fun newScore(){
         LCD.clear()
         cursor.write(0,0,"IUDWIUAHDIUWAHUDI")
         cursor.write(1,0,"IUDWIUAHDIUWAHUDI")
@@ -105,42 +109,40 @@ object TUI {
         KBD.init()
     }
 
-    fun showGun(line:Int,row:Int){
-        cursor.write(line,row,">")
-    }
+
 
     private fun checkHit() {
 
-        if (cursor.line == 0 && SpaceInvadersApp.list0.isNotEmpty() && shootingKey == SpaceInvadersApp.list0[0]) {
+        if (cursor.line == 0 && list0.isNotEmpty() && shootingKey == list0[0]) {
             score = SpaceInvadersApp.addScore(score)
-            SpaceInvadersApp.list0 = SpaceInvadersApp.list0.substring(1)
-            displayWrite(SpaceInvadersApp.list0,  SpaceInvadersApp.list1, cursor.line, 1, hit = true)
+            list0 = list0.substring(1)
+            displayWrite(list0,  list1, cursor.line, 1, hit = true)
 
-        } else if (cursor.line == 1 && SpaceInvadersApp.list1.isNotEmpty() && shootingKey == SpaceInvadersApp.list1[0]) {
+        } else if (cursor.line == 1 && list1.isNotEmpty() && shootingKey == list1[0]) {
             score =  SpaceInvadersApp.addScore(score)
-            SpaceInvadersApp.list1 =  SpaceInvadersApp.list1.substring(1)
-            displayWrite(SpaceInvadersApp.list0,  SpaceInvadersApp.list1, cursor.line, 1, hit = true)
+            list1 =  list1.substring(1)
+            displayWrite(list0,  list1, cursor.line, 1, hit = true)
         }
     }
     fun addInvaders(randomLine: Int, randomNumber: String) {
         if (randomLine == 0) {
-            SpaceInvadersApp.list0 += randomNumber
+            list0 += randomNumber
         } else {
-            SpaceInvadersApp.list1 += randomNumber
+            list1 += randomNumber
         }
-        displayWrite(SpaceInvadersApp.list0, SpaceInvadersApp.list1, randomLine, 1, hit)
+        displayWrite(list0, list1, randomLine, 1, hit)
     }
     private fun changeLine() {
 
         var linee = cursor.line
         cursor.write(linee,cursor.row," ")
         linee = if (cursor.line == 0) 1 else 0
-        showGun(linee, cursor.row)
+        cursor.showGun(linee, cursor.row)
         cursor = Cursor(linee,cursor.row)
     }
 
-    fun handleKeyPress(key: Char) {
-        when (key) {
+    fun handleKeyPress() {
+        when (val key : Char = KBD.getKey()) {
             '*' -> changeLine()
             '#' -> checkHit()
             else -> displayKey(key)
@@ -162,44 +164,46 @@ object TUI {
         if (hit) {
             if (line == 0) {
 
-                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                LCD.clear()
-                displayBars()
-                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                LCD.clear()//XXXXXXXXX
+                displayBars()//XXXXXXXXX
 
                 cursor.write(0,startingPosition0,list0)
-                //LCD.cursor(0, startingPosition0)
-                //LCD.write(list0)
+
                 cursor.write(1,startingPosition1,list1)
-                //LCD.cursor(1, startingPosition1)
-                //LCD.write(list1)
+
 
             } else {
 
-                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                LCD.clear()
-                displayBars()
-                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                LCD.clear()//XXXXXXXXX
+                displayBars()//XXXXXXXXX
+
                 cursor.write(0,startingPosition0,list0)
-                //LCD.cursor(0, startingPosition0)
-                //LCD.write(list0)
+
                 cursor.write(1,startingPosition1,list1)
-                //LCD.cursor(1, startingPosition1)
-                //LCD.write(list1)
+
             }
-            showGun(line, row)
+            cursor.showGun(line, row)
         }
 
         else{// Atualiza ambas as linhas independentemente da linha atual
-            LCD.cursor(0, startingPosition0)
-            LCD.write(list0)
-            LCD.cursor(1, startingPosition1)
-            LCD.write(list1)}
+            cursor.write(0,startingPosition0,list0)
+            cursor.write(1,startingPosition1,list1)
+
+            }
     }
-    fun gameOver(score: Int) { // Função para exibir a mensagem de fim de jogo
-        LCD.clear() // Limpa o LCD
-        cursor.write(0,0,"*** GAME OVER **")
-        cursor.write(1,0,"Score: $score            ")
+
+    fun readyToPlay():Boolean{
+        return KBD.getKey() == '*' && coin >= 2
+    }
+
+
+    fun gameOver(score: Int,newScore:Boolean) { // Função para exibir a mensagem de fim de jogo
+
+        if (newScore){ newScore()}
+        else{
+            LCD.clear() // Limpa o LCD
+            cursor.write(0,0,"*** GAME OVER **")
+            cursor.write(1,0,"Score: $score            ")}
     }
 
     fun displayBars() {

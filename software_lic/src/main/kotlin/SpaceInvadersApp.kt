@@ -1,8 +1,7 @@
 import isel.leic.utils.Time
 
 object SpaceInvadersApp {
-    var list0: String = "" // Lista para armazenar números aleatórios na linha 0
-    var list1: String = "" // Lista para armazenar números aleatórios na linha 1
+
 
     private var randomNumber = (0..9).random().toString() // Gera um número aleatório entre 0 e 9
     private var randomLine = (0..1).random() // Gera uma linha aleatória (0 ou 1)
@@ -32,38 +31,37 @@ object SpaceInvadersApp {
         }
     }
 
-    // Função principal do jogo
+
     fun playing() {
         TUI.displayBars() // Exibe as barras no início das linhas
-        TUI.showGun(cursor.line, cursor.row) // Exibe a posição inicial da arma
-
-        while (list0.length < 14 && list1.length < 14) { // Loop principal do jogo
+        cursor.showGun(cursor.line, cursor.row) // Exibe a posição inicial da arma
+        while (TUI.list0.length < 14 && TUI.list1.length < 14) { // Loop principal do jogo
             updateTime()
-            TUI.handleKeyPress(KBD.getKey())
+            TUI.handleKeyPress()
             Time.sleep(100) // Delay
         }
-        if (TUI.score > 2){TUI.newScore()}
-        else{TUI.gameOver(TUI.score * 10)}
 
+        if (TUI.score > 2){TUI.gameOver(TUI.score * 10, newScore = true)}
+        else{TUI.gameOver(TUI.score * 10, newScore = false)}
     }
 }
 
 // Função principal para iniciar o jogo
 fun main() {
-    var playing = false
+    var readyToPlay = false
     SpaceInvadersApp.init()
     TUI.initialDisplay()
     Time.sleep(2000)
 
-    while (!playing) {
-        playing = TUI.displayStatistics(playing)
+    while (!readyToPlay) {
+        readyToPlay = TUI.displayStatistics(readyToPlay)
 
         TUI.isCoin()
 
-
-        if (KBD.getKey() == '*' && TUI.coin >= 2) {
-            playing = false
+        if (TUI.readyToPlay()) {
+            readyToPlay = true
         }
+
     }
 
     LCD.clear()
