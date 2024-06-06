@@ -13,15 +13,17 @@ object TUI {
     enum class Column { UP, DOWN }
      var coin: Int = 0
     var lastState : Boolean = false
-
-    public class Cursor(val line: Int = 0,val row: Int = 1){
+    var cursor = Cursor()
+     var shootingKey = ' ' // Inicializa a tecla de tiro
+    var score: Int = 0
+    var hit = false
+     class Cursor(val line: Int = 0,val row: Int = 1){
         fun write(line: Int,row: Int,word:String){
             LCD.cursor(line,row)
             LCD.write(word) // Escreve a mensagem inicial na primeira linha do
         }
 
     }
-
 
     fun isCoin():Boolean{
 
@@ -32,44 +34,68 @@ object TUI {
                 HAL.setBits(COIN_MASK)
             }
             HAL.clrBits(COIN_MASK)
-
+            cursor.write(1,0," Game X  X X  ${coin}$    ")
             return true
+
         }
 
         return false
     }
+    fun displayStatistics(playing:Boolean):Boolean {
 
-    fun displayStatistics() {
+        if(playing){
 
-        statistics.clear()
+        statistics.clear() //Limpa a lista de estatísticas antes de começar a preencher novamente
 
-        for (entry in text) {
-            val parts = entry.split(";")
-            if (parts.size != 2) continue
 
+        for (entry in text) { //Processa cada entrada de texto para extrair nome e pontuação
+            val parts = entry.split(";") // Divide a string
             val name = parts[0]
             val score = parts[1].toInt()
-            statistics.add(Pair(name, score))
+            statistics.add(Pair(name, score)) //Add Pair(name, score) à lista (statistics)
         }
-        statistics.sortByDescending { it.second }// Ordenar score (second) em ordem decrescente
 
-        var position = 1
+        statistics.sortByDescending { it.second }//Ordena a lista por ordem decrescente
 
-        for ((name, score) in statistics) {// Exibir cada par (nome, pontuação)
+        var position = 1 //Variável para rastrear a posição na lista
 
-            if (KBD.getKey() == '*') {
-                LCD.clear()
-                SpaceInvadersApp.playing()
-                return
+        for ((name, score) in statistics) { //Exibir cada Pair(name, score)
+
+            isCoin()
+
+            if (KBD.getKey() == '*') {//Verifica se queremos iniciar o jogo
+                LCD.clear() // Limpa o display LCD
+                SpaceInvadersApp.playing() // Inicia o jogo
+                return true// Sai da função
             }
-            LCD.cursor(1, 0)
-            LCD.write("$position-$name    $score     ")
-            if (num_of_players == position){position = 0}
+
+
+            cursor.write(1, 0, "$position-$name    $score     ") //Escreve a pontuação
+
+
+            if (num_of_players == position) {//Verifica ja percorreu a a lista toda e reseta a position
+                position = 0
+            }
             position++
-            Time.sleep(1000)
+            Time.sleep(700)
+
+            // Loop para verificação de moedas durante a espera
+            for (i in 1..10) {
+
+                isCoin()
+                Time.sleep(200)// Espera 200 ms antes de próxima verificação
+            }
         }
+        }
+        return false
     }
 
+    fun newScore(){
+        LCD.clear()
+        cursor.write(0,0,"IUDWIUAHDIUWAHUDI")
+        cursor.write(1,0,"IUDWIUAHDIUWAHUDI")
+
+    }
     fun init(){
         LCD.init()
         KBD.init()
@@ -79,9 +105,49 @@ object TUI {
         LCD.cursor(line,row)
         LCD.write(">")
     }
+    fun checkHit() {
 
-    val cursor = Cursor()
+        if (cursor.line == 0 && SpaceInvadersApp.list0.isNotEmpty() && shootingKey == SpaceInvadersApp.list0[0]) {
+            score = SpaceInvadersApp.addScore(score)
+            SpaceInvadersApp.list0 = SpaceInvadersApp.list0.substring(1)
+            displayWrite(SpaceInvadersApp.list0,  SpaceInvadersApp.list1, cursor.line, 1, hit = true)
 
+        } else if (cursor.line == 1 && SpaceInvadersApp.list1.isNotEmpty() && shootingKey == SpaceInvadersApp.list1[0]) {
+            score =  SpaceInvadersApp.addScore(score)
+            SpaceInvadersApp.list1 =  SpaceInvadersApp.list1.substring(1)
+            displayWrite(SpaceInvadersApp.list0,  SpaceInvadersApp.list1, cursor.line, 1, hit = true)
+        }
+    }
+    fun addInvaders(randomLine: Int, randomNumber: String) {
+        if (randomLine == 0) {
+            SpaceInvadersApp.list0 += randomNumber
+        } else {
+            SpaceInvadersApp.list1 += randomNumber
+        }
+        displayWrite(SpaceInvadersApp.list0, SpaceInvadersApp.list1, randomLine, 1, hit)
+    }
+    fun changeLine() {
+
+        var linee = cursor.line
+        cursor.write(linee,cursor.row," ")
+        linee = if (cursor.line == 0) 1 else 0
+        showGun(linee, cursor.row)
+        cursor = Cursor(linee,cursor.row)
+    }
+
+    fun handleKeyPress(key: Char) {
+        when (key) {
+            '*' -> changeLine()
+            '#' -> checkHit()
+            else -> displayKey(key)
+        }
+    }
+    fun displayKey(key: Char) {
+        if (key != KBD.NONE) {
+            cursor.write(cursor.line, 0,key.toString())
+            shootingKey = key
+        }
+    }
     fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
 
         val maxLength = 17
@@ -143,6 +209,12 @@ object TUI {
 
     }
 
+    fun initialDisplay(){
+         cursor.write(0,1,"Space Invaders ")//SAIUBDGIWUBA
+         cursor.write(1,0," Game X  X X  ${coin}$    ")//SAIUBDGIWUBA
+
+
+    }
     fun writeKey(time: Long) {
         var temp = KBD.waitKey(time)//Obtem a tecla premida
         while (temp != KBD.NONE) {//Enquando a tecla não for nenhuma...
