@@ -59,10 +59,9 @@ fun main() {
         playing = TUI.displayStatistics(playing)
 
         TUI.isCoin()
-            // Alguma lógica aqui se necessário
 
 
-        if (KBD.getKey() == '*') {
+        if (KBD.getKey() == '*' && TUI.coin >= 2) {
             playing = false
         }
     }

@@ -24,7 +24,19 @@ object TUI {
         }
 
     }
+    private fun splitStatistics(){
+        statistics.clear() //Limpa a lista de estatísticas antes de começar a preencher novamente
 
+
+        for (entry in text) { //Processa cada entrada de texto para extrair nome e pontuação
+            val parts = entry.split(";") // Divide a string
+            val name = parts[0]
+            val score = parts[1].toInt()
+            statistics.add(Pair(name, score)) //Add Pair(name, score) à lista (statistics)
+        }
+
+        statistics.sortByDescending { it.second }//Ordena a lista por ordem decrescente
+    }
     fun isCoin():Boolean{
 
         if(HAL.isBit(COIN_MASK)){
@@ -34,7 +46,9 @@ object TUI {
                 HAL.setBits(COIN_MASK)
             }
             HAL.clrBits(COIN_MASK)
-            cursor.write(1,0," Game X  X X ${coin}$   ")
+            if (coin<=9){cursor.write(1,0," Game X  X X  ${coin}$    ")}
+            else{cursor.write(1,0," Game X  X X ${coin}$    ")}
+
             return true
 
         }
@@ -45,17 +59,7 @@ object TUI {
 
         if(!playing){
 
-            statistics.clear() //Limpa a lista de estatísticas antes de começar a preencher novamente
-
-
-            for (entry in text) { //Processa cada entrada de texto para extrair nome e pontuação
-                val parts = entry.split(";") // Divide a string
-                val name = parts[0]
-                val score = parts[1].toInt()
-                statistics.add(Pair(name, score)) //Add Pair(name, score) à lista (statistics)
-            }
-
-            statistics.sortByDescending { it.second }//Ordena a lista por ordem decrescente
+            splitStatistics()
 
             var position = 1 //Variável para rastrear a posição na lista
 
@@ -63,7 +67,7 @@ object TUI {
 
                 isCoin()
 
-                if (KBD.getKey() == '*') {//Verifica se queremos iniciar o jogo
+                if (KBD.getKey() == '*' && coin >= 2) {//Verifica se queremos iniciar o jogo
                     LCD.clear() // Limpa o display LCD
                     SpaceInvadersApp.playing() // Inicia o jogo
                     return true// Sai da função
@@ -102,8 +106,8 @@ object TUI {
     }
 
     fun showGun(line:Int,row:Int){
-        LCD.cursor(line,row)
-        LCD.write(">")
+        cursor.write(line,row,">")
+
     }
     fun checkHit() {
 
