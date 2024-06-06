@@ -107,9 +107,9 @@ object TUI {
 
     fun showGun(line:Int,row:Int){
         cursor.write(line,row,">")
-
     }
-    fun checkHit() {
+
+    private fun checkHit() {
 
         if (cursor.line == 0 && SpaceInvadersApp.list0.isNotEmpty() && shootingKey == SpaceInvadersApp.list0[0]) {
             score = SpaceInvadersApp.addScore(score)
@@ -130,7 +130,7 @@ object TUI {
         }
         displayWrite(SpaceInvadersApp.list0, SpaceInvadersApp.list1, randomLine, 1, hit)
     }
-    fun changeLine() {
+    private fun changeLine() {
 
         var linee = cursor.line
         cursor.write(linee,cursor.row," ")
@@ -146,13 +146,13 @@ object TUI {
             else -> displayKey(key)
         }
     }
-    fun displayKey(key: Char) {
+    private fun displayKey(key: Char) {
         if (key != KBD.NONE) {
             cursor.write(cursor.line, 0,key.toString())
             shootingKey = key
         }
     }
-    fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
+    private fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
 
         val maxLength = 17
         val startingPosition0 = maxLength - (list0.length + 1)
@@ -198,18 +198,13 @@ object TUI {
     }
     fun gameOver(score: Int) { // Função para exibir a mensagem de fim de jogo
         LCD.clear() // Limpa o LCD
-        LCD.cursor(0, 0)
-        LCD.write("*** GAME OVER **") // Mensagem de fim de jogo na primeira linha
-        LCD.cursor(1, 0)
-        LCD.write("Score: $score ") // Exibe a pontuação na segunda linha
+        cursor.write(0,0,"*** GAME OVER **")
+        cursor.write(1,0,"Score: $score            ")
     }
 
     fun displayBars() {
-
-        LCD.cursor(0, 0)
-        LCD.write("]")
-        LCD.cursor(1, 0)
-        LCD.write("]")
+        cursor.write(0,0,"]")
+        cursor.write(1,0,"]")
 
     }
 
