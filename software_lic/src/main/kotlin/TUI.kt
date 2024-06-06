@@ -28,6 +28,11 @@ object TUI {
             cursor.write(line,row,">")
         }
 
+        fun displayBars() {
+            cursor.write(0,0,"]")
+            cursor.write(1,0,"]")
+        }
+
     }
     private fun splitStatistics(){
 
@@ -165,7 +170,7 @@ object TUI {
             if (line == 0) {
 
                 LCD.clear()//XXXXXXXXX
-                displayBars()//XXXXXXXXX
+                cursor.displayBars()//XXXXXXXXX
 
                 cursor.write(0,startingPosition0,list0)
 
@@ -175,7 +180,7 @@ object TUI {
             } else {
 
                 LCD.clear()//XXXXXXXXX
-                displayBars()//XXXXXXXXX
+                cursor.displayBars()//XXXXXXXXX
 
                 cursor.write(0,startingPosition0,list0)
 
@@ -206,11 +211,7 @@ object TUI {
             cursor.write(1,0,"Score: $score            ")}
     }
 
-    fun displayBars() {
-        cursor.write(0,0,"]")
-        cursor.write(1,0,"]")
 
-    }
 
     fun initialDisplay(){
         cursor.write(0,1,"Space Invaders ")//SAIUBDGIWUBA

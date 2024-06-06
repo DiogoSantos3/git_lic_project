@@ -33,7 +33,7 @@ object SpaceInvadersApp {
 
 
     fun playing() {
-        TUI.displayBars() // Exibe as barras no início das linhas
+        cursor.displayBars() // Exibe as barras no início das linhas
         cursor.showGun(cursor.line, cursor.row) // Exibe a posição inicial da arma
         while (TUI.list0.length < 14 && TUI.list1.length < 14) { // Loop principal do jogo
             updateTime()
