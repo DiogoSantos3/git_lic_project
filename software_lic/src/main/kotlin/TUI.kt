@@ -11,13 +11,13 @@ object TUI {
     private  var num_of_players = text.count()
     private val statistics = mutableListOf<Pair<String, Int>>()//Lista de pares (nome, pontuação)
     enum class Column { UP, DOWN }
-     var coin: Int = 0
+    var coin: Int = 0
     var lastState : Boolean = false
     var cursor = Cursor()
-     var shootingKey = ' ' // Inicializa a tecla de tiro
+    var shootingKey = ' ' // Inicializa a tecla de tiro
     var score: Int = 0
     var hit = false
-     class Cursor(val line: Int = 0,val row: Int = 1){
+    class Cursor(val line: Int = 0,val row: Int = 1){
         fun write(line: Int,row: Int,word:String){
             LCD.cursor(line,row)
             LCD.write(word) // Escreve a mensagem inicial na primeira linha do
@@ -34,7 +34,7 @@ object TUI {
                 HAL.setBits(COIN_MASK)
             }
             HAL.clrBits(COIN_MASK)
-            cursor.write(1,0," Game X  X X  ${coin}$    ")
+            cursor.write(1,0," Game X  X X ${coin}$   ")
             return true
 
         }
@@ -43,49 +43,49 @@ object TUI {
     }
     fun displayStatistics(playing:Boolean):Boolean {
 
-        if(playing){
+        if(!playing){
 
-        statistics.clear() //Limpa a lista de estatísticas antes de começar a preencher novamente
+            statistics.clear() //Limpa a lista de estatísticas antes de começar a preencher novamente
 
 
-        for (entry in text) { //Processa cada entrada de texto para extrair nome e pontuação
-            val parts = entry.split(";") // Divide a string
-            val name = parts[0]
-            val score = parts[1].toInt()
-            statistics.add(Pair(name, score)) //Add Pair(name, score) à lista (statistics)
-        }
-
-        statistics.sortByDescending { it.second }//Ordena a lista por ordem decrescente
-
-        var position = 1 //Variável para rastrear a posição na lista
-
-        for ((name, score) in statistics) { //Exibir cada Pair(name, score)
-
-            isCoin()
-
-            if (KBD.getKey() == '*') {//Verifica se queremos iniciar o jogo
-                LCD.clear() // Limpa o display LCD
-                SpaceInvadersApp.playing() // Inicia o jogo
-                return true// Sai da função
+            for (entry in text) { //Processa cada entrada de texto para extrair nome e pontuação
+                val parts = entry.split(";") // Divide a string
+                val name = parts[0]
+                val score = parts[1].toInt()
+                statistics.add(Pair(name, score)) //Add Pair(name, score) à lista (statistics)
             }
 
+            statistics.sortByDescending { it.second }//Ordena a lista por ordem decrescente
 
-            cursor.write(1, 0, "$position-$name    $score     ") //Escreve a pontuação
+            var position = 1 //Variável para rastrear a posição na lista
 
-
-            if (num_of_players == position) {//Verifica ja percorreu a a lista toda e reseta a position
-                position = 0
-            }
-            position++
-            Time.sleep(700)
-
-            // Loop para verificação de moedas durante a espera
-            for (i in 1..10) {
+            for ((name, score) in statistics) { //Exibir cada Pair(name, score)
 
                 isCoin()
-                Time.sleep(200)// Espera 200 ms antes de próxima verificação
+
+                if (KBD.getKey() == '*') {//Verifica se queremos iniciar o jogo
+                    LCD.clear() // Limpa o display LCD
+                    SpaceInvadersApp.playing() // Inicia o jogo
+                    return true// Sai da função
+                }
+
+
+                cursor.write(1, 0, "$position-$name    $score     ") //Escreve a pontuação
+
+
+                if (num_of_players == position) {//Verifica ja percorreu a a lista toda e reseta a position
+                    position = 0
+                }
+                position++
+                Time.sleep(700)
+
+                // Loop para verificação de moedas durante a espera
+                for (i in 1..10) {
+
+                    isCoin()
+                    Time.sleep(200)// Espera 200 ms antes de próxima verificação
+                }
             }
-        }
         }
         return false
     }
@@ -210,8 +210,8 @@ object TUI {
     }
 
     fun initialDisplay(){
-         cursor.write(0,1,"Space Invaders ")//SAIUBDGIWUBA
-         cursor.write(1,0," Game X  X X  ${coin}$    ")//SAIUBDGIWUBA
+        cursor.write(0,1,"Space Invaders ")//SAIUBDGIWUBA
+        cursor.write(1,0," Game X  X X  ${coin}$    ")//SAIUBDGIWUBA
 
 
     }

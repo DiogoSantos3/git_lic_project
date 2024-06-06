@@ -58,9 +58,9 @@ fun main() {
     while (!playing) {
         playing = TUI.displayStatistics(playing)
 
-        if (TUI.isCoin()) {
+        TUI.isCoin()
             // Alguma lógica aqui se necessário
-        }
+
 
         if (KBD.getKey() == '*') {
             playing = false
