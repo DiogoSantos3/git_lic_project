@@ -5,7 +5,7 @@ object SpaceInvadersApp {
     private var randomNumber = (0..9).random().toString() // Gera um número aleatório entre 0 e 9
     private var randomLine = (0..1).random() // Gera uma linha aleatória (0 ou 1)
 
-    private const val SHOW_INVADERS_INTERVAL = 500L // Intervalo de tempo para gerar novos números aleatórios (200 ms)
+    private const val SHOW_INVADERS_INTERVAL = 200L // Intervalo de tempo para gerar novos números aleatórios (200 ms)
     private var lastUpdateTime = System.currentTimeMillis() // Marca o tempo da última atualização (Começo do jogo)
 
     public var cursor = TUI.Cursor()
@@ -37,12 +37,10 @@ object SpaceInvadersApp {
             updateTime()
             TUI.handleKeyPress()
             Time.sleep(100) // Delay
-            println(TUI.score)
-            println(TUI.bestScore)
         }
 
-        if (TUI.score * 10 > TUI.bestScore){TUI.gameOver(TUI.score, newScore = true)}
-        else{TUI.gameOver(TUI.score , newScore = false)}
+        TUI.gameOver(TUI.score)
+
     }
 }
 
@@ -58,9 +56,9 @@ fun main() {
 
         TUI.isCoin()
 
-        if (TUI.readyToPlay()) {
-            readyToPlay = true
-        }
+        if (TUI.readyToPlay()) readyToPlay = true
+
+
     }
     LCD.clear()
     SpaceInvadersApp.playing()

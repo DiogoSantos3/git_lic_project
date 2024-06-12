@@ -19,7 +19,8 @@ object TUI {
     private var shootingKey = ' ' // Inicializa a tecla de tiro
     var score: Int = 0
     private var hit = false
-    public var bestScore : Int = 0
+    var bestScore : Int = 0
+    private var letter = listOf('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z')
 
 
     class Cursor(val line: Int = 0,val row: Int = 1){
@@ -43,9 +44,7 @@ object TUI {
     fun displayStatistics(readyToPlay:Boolean):Boolean {
 
         if(!readyToPlay){
-
             splitStatistics()
-
             var position = 1 //Variável para rastrear a posição na lista
 
             for ((name, score) in statistics) { //Exibir cada Pair(name, score)
@@ -58,9 +57,7 @@ object TUI {
                     return true// Sai da função
                 }
 
-
                 cursor.write(1, 0, "$position-$name    $score     ") //Escreve a pontuação
-
 
                 if (num_of_players == position) {//Verifica ja percorreu a a lista toda e reseta a position
                     position = 0
@@ -68,8 +65,8 @@ object TUI {
                 position++
                 Time.sleep(700)
 
-                // Loop para verificação de moedas durante a espera
-                for (i in 1..10) {
+
+                for (i in 1..10) {// Loop para verificação de moedas durante a espera
                     isCoin()
                     Time.sleep(200)// Espera 200 ms antes de próxima verificação
                 }
@@ -144,8 +141,8 @@ object TUI {
         val startingPosition0 = maxLength - (list0.length + 1)
         val startingPosition1 = maxLength - (list1.length + 1)
 
-        // Se um 'hit' ocorrer, limpa apenas a posição do hit e reexibe a linha
-        if (hit) {
+
+        if (hit) { //Se um 'hit' ocorrer, limpa apenas a posição do hit e reexibe a linha
             if (line == 0) {
                 LCD.clear()//XXXXXXXXX
                 cursor.displayBars()//XXXXXXXXX
@@ -162,7 +159,7 @@ object TUI {
             cursor.showGun(line, row)
         }
 
-        else{// Atualiza ambas as linhas independentemente da linha atual
+        else{//Atualiza ambas as linhas independentemente da linha atual
             cursor.write(0,startingPosition0,list0)
             cursor.write(1,startingPosition1,list1)
             }
@@ -170,13 +167,16 @@ object TUI {
     fun readyToPlay():Boolean{
         return KBD.getKey() == '*' && coin >= 2
     }
-    fun gameOver(score: Int,newScore:Boolean) { // Função para exibir a mensagem de fim de jogo
+    fun gameOver(score: Int) { //Função para exibir a mensagem de fim de jogo
+        LCD.clear() //Limpa o LCD
+        cursor.write(0,0,"*** GAME OVER **")
+        cursor.write(1,0,"Score: ${score*10}            ")
+        if (score * 10 > bestScore){
+            Time.sleep(1500)
+            println("YUDWVAUYDVASHVDKJWAVBKDBVAWIBVADSKJVDKJAWVDHVASJHDVJWHA")
+            newScore()
+        }
 
-        if (newScore){ newScore()}
-        else{
-            LCD.clear() // Limpa o LCD
-            cursor.write(0,0,"*** GAME OVER **")
-            cursor.write(1,0,"Score: ${score*10}            ")}
     }
     fun isCoin():Boolean{
 
@@ -196,10 +196,25 @@ object TUI {
 
         return false
     }
-    private fun newScore(){
+    private fun newScore() {
+        var count = 0
         LCD.clear()
-        cursor.write(0,0,"IUDWIUAHDIUWAHUDI")
-        cursor.write(1,0,"IUDWIUAHDIUWAHUDI")
+
+        while (true)    {
+            Time.sleep(500)
+            val key = KBD.getKey()
+
+            if (key == '2') count++
+
+            if (key == '8')count--
+
+            if (key == '5' )break
+
+            cursor.write(0, 0, "Name:${letter[count]}")
+            cursor.write(1,0,"Score: ${score*10}            ")
+
+        }
+
 
     }
     fun writeKey(time: Long) {

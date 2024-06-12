@@ -1,6 +1,2 @@
-Carlos;20
-Pedro;55
-Diogo;32
-Miguel;56
-Joao;12
-Tiago;70
+Carlos;0
+CUAWBI;1
