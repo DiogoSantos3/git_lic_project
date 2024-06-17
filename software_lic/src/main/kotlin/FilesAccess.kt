@@ -1,4 +1,3 @@
-import java.io.File
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.PrintWriter
@@ -18,7 +17,7 @@ object FilesAccess {
         return PrintWriter(fileName)
     }
 
-    fun escrever(coin: Int, jogo: Int) {
+    fun escrever(coin: String, jogo: String) {
         val pw = createWriter("x.txt")
         pw.println(coin.toString())
         pw.println(jogo.toString())
@@ -31,11 +30,11 @@ object FilesAccess {
     }
 
     fun resetFile(fileName: String) {
-        escrever(0, 0)
+        escrever(0.toString(), 0.toString())
     }
 }
 
 fun main() {
-    FilesAccess.escrever(123, 2)
+    FilesAccess.escrever(123.toString(), 2.toString())
     FilesAccess.ler("x.txt")
 }
