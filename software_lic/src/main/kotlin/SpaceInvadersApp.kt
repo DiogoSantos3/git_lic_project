@@ -1,5 +1,6 @@
 import isel.leic.utils.Time
 import java.io.File
+import kotlin.system.exitProcess
 
 object SpaceInvadersApp {
 
@@ -35,7 +36,7 @@ object SpaceInvadersApp {
     }
     fun playing() {//Função principal do jogo
 
-        LCD.clear() //TENTAR MUDAR ISTO
+        LCD.clear() //MUDAR
 
         cursor.displayBars() // Exibe as barras no início das linhas
         cursor.showGun(cursor.line, cursor.row) // Exibe a posição inicial da arma
@@ -50,22 +51,23 @@ object SpaceInvadersApp {
     }
 
     fun manutencion(){
-            LCD.clear()
-            cursor.write(0, 0, "Maintenance Mode")
+            cursor.write(0, 0, " On Maintenance ")
+            cursor.write(1, 0, "*-Count  #-ShutD ")
+
             while (M.isM()) {
-                // Do nothing, just wait until the maintenance mode is deactivated
-                Time.sleep(500)
+                TUI.man()
+                Time.sleep(100)
             }
             state = State.INITIAL
 
     }
 
+
     fun displayStatistics() {
 
         if(state == State.INITIAL){
+
             var cores = Scores.splitScores()
-
-
             var position = 1 //Variável para rastrear a posição na lista
 
             for ((name, score) in cores) { //Exibir cada Pair(name, score)
@@ -78,7 +80,7 @@ object SpaceInvadersApp {
 
                 if(CoinAccepter.isCoin()){
                     cursor.write(1,0," Game X  X X  ${numCoins}$    ")
-                    Statistics.addCoins(Statistics.numCoins().toInt()).toString()
+                    Statistics.addCoins(Statistics.numCoins().toInt())
                 }
 
                 if (TUI.readyToPlay() && numCoins >= 2) {//Verifica se queremos iniciar o jogo

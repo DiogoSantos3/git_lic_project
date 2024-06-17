@@ -1,5 +1,6 @@
 import isel.leic.utils.Time
 import java.io.File
+import kotlin.system.exitProcess
 
 object TUI {
     var list0: String = "" // Lista para armazenar números aleatórios na linha 0
@@ -76,6 +77,7 @@ object TUI {
         return KBD.getKey() == '*'
     }
 
+
     fun addInvaders(randomLine: Int, randomNumber: String) {
         if (randomLine == 0) {
             list0 += randomNumber
@@ -83,6 +85,25 @@ object TUI {
             list1 += randomNumber
         }
         displayWrite(list0, list1, randomLine, 1, hit)
+    }
+
+    fun displayStats() {
+        LCD.clear()
+        cursor.write(0, 0, " Coins:${Statistics.numCoins()}          ")//MUDAR
+        cursor.write(1, 0, " Games:${Statistics.numGames()}         ")//MUDAR
+    }
+
+    fun man() {
+        when (val key: Char = KBD.getKey()) {
+            '*' -> {
+                displayStats()
+            }
+
+            '#' -> {
+                exitProcess(0)
+            }
+
+        }
     }
     private fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
 
