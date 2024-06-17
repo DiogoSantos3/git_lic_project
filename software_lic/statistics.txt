@@ -1,2 +1,4 @@
 Carlos;0
 CUAWBI;1
+Pedro;12
+Diogo;32

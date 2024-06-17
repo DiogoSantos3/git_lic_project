@@ -2,23 +2,40 @@ import java.io.File
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.PrintWriter
-object FilesAccess{
-
+object FilesAccess {
     private const val NAME_STATS_FILE = "statistics.txt"
     private const val X = "x.txt"
+    private var num_of_players = NAME_STATS_FILE.count()
     fun createReader(fileName: String): BufferedReader {
         return BufferedReader(FileReader(fileName))
+    }
+
+    fun numOfPlayers():Int{
+        return NAME_STATS_FILE.count()
     }
 
     fun createWriter(fileName: String): PrintWriter {
         return PrintWriter(fileName)
     }
 
-
-    fun escrever(fileName: String,coin:Int,jogo:Int){
-        val pw = createWriter("hashTags.txt")
-        pw.println(coin)
-
-
+    fun escrever(coin: Int, jogo: Int) {
+        val pw = createWriter("x.txt")
+        pw.println(coin.toString())
+        pw.println(jogo.toString())
+        pw.close()
     }
+
+    fun ler(fileName: String): List<String> {
+        val fr = createReader(fileName)
+        return fr.readLines()
+    }
+
+    fun resetFile(fileName: String) {
+        escrever(0, 0)
+    }
+}
+
+fun main() {
+    FilesAccess.escrever(123, 2)
+    FilesAccess.ler("x.txt")
 }
