@@ -34,6 +34,7 @@ object FilesAccess {
     }
 }
 
+
 fun main() {
     FilesAccess.escrever(123.toString(), 2.toString())
     FilesAccess.ler("x.txt")

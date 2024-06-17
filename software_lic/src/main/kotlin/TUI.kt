@@ -144,8 +144,8 @@
                 println("YUDWVAUYDVASHVDKJWAVBKDBVAWIBVADSKJVDKJAWVDHVASJHDVJWHA")
                 newScore()
             }
-
         }
+
         private fun newScore() {
             var count = 0
             LCD.clear()

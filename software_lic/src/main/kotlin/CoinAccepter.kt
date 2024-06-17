@@ -12,7 +12,6 @@ object CoinAccepter{
             HAL.clrBits(COIN_MASK)
 
             return true
-
         }
 
         return false

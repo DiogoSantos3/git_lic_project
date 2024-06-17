@@ -14,5 +14,4 @@ object Statistics {
     fun addGames(numGames:Int){
         FilesAccess.escrever(numCoins(),numGames())
     }
-
 }

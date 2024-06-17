@@ -118,8 +118,6 @@ object SpaceInvadersApp {
     }
 
 
-
-
 fun main() {
 
     SpaceInvadersApp.init()
@@ -133,6 +131,7 @@ fun main() {
                        SpaceInvadersApp.State.INITIAL ->{
                            SpaceInvadersApp.displayStatistics()
                        }
+
             SpaceInvadersApp.State.PLAYING ->{
                 SpaceInvadersApp.playing()
 
@@ -145,14 +144,6 @@ fun main() {
                 println("X")
 
             }
-
-
-
         }
-
-
-
     }
-
-
 }
