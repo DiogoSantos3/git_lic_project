@@ -1,5 +1,7 @@
 object Scores {
-    private const val NAME_FILE = "statistics.txt"
+    private val text = FilesAccess.ler("scores.txt")
+    var num_of_players = text.count()
+    private const val NAME_FILE = "scores.txt"
     private val scores = mutableListOf<Pair<String, Int>>() // Lista de pares (nome, pontuação)
     private var bestScore: Int = 0
 

@@ -7,14 +7,10 @@ object TUI {
     private var nColUP = 0
     private var nColDOWN = 0
     private var actualColumn = Column.UP
-    private var COIN_MASK = 0x40
-    private const val NAME_FILE = "statistics.txt"
+    private const val NAME_FILE = "scores.txt"
     private val text = File(NAME_FILE).readLines()
-    private  var num_of_players = text.count()
-    private val statistics = mutableListOf<Pair<String, Int>>()//Lista de pares (nome, pontuação)
+
     enum class Column { UP, DOWN }
-    private var coin: Int = 0
-    private var lastState : Boolean = false
     var cursor = Cursor()
     private var shootingKey = ' ' // Inicializa a tecla de tiro
     var score: Int = 0
@@ -36,60 +32,8 @@ object TUI {
             cursor.write(0,0,"]")
             cursor.write(1,0,"]")
         }
-        fun initialDisplay(){
-            cursor.write(0,1,"Space Invaders ")//SAIUBDGIWUBA
-            cursor.write(1,0," Game X  X X  ${coin}$    ")//SAIUBDGIWUBA
-        }
     }
-    fun displayStatistics() {
 
-
-            splitStatistics()
-            var position = 1 //Variável para rastrear a posição na lista
-
-            for ((name, score) in statistics) { //Exibir cada Pair(name, score)
-
-                if(CoinAccepter.isCoin()){
-                    println("COIN")}
-
-                if (readyToPlay()) {//Verifica se queremos iniciar o jogo
-                    LCD.clear() // Limpa o display LCD
-                    SpaceInvadersApp.playing() // Inicia o jogo
-                    return // Sai da função
-                }
-
-                cursor.write(1, 0, "$position-$name    $score     ") //Escreve a pontuação
-
-                if (num_of_players == position) {//Verifica ja percorreu a a lista toda e reseta a position
-                    position = 0
-                }
-                position++
-                Time.sleep(700)
-
-
-                for (i in 1..10) {// Loop para verificação de moedas durante a espera
-                    if(CoinAccepter.isCoin()){
-                        println("COIN")}
-                    Time.sleep(200)// Espera 200 ms antes de próxima verificação
-                }
-            }
-
-    }
-    private fun splitStatistics(){
-
-        statistics.clear() //Limpa a lista de estatísticas antes de começar a preencher novamente
-
-        for (entry in text) { //Processa cada entrada de texto para extrair nome e pontuação
-            val parts = entry.split(";") // Divide a string
-            val name = parts[0]
-            val score = parts[1].toInt()
-            statistics.add(Pair(name, score)) //Add Pair(name, score) à lista (statistics)
-        }
-
-        statistics.sortByDescending { it.second }//Ordena a lista por ordem decrescente
-        bestScore = statistics.first().second
-
-    }
     fun init(){
         LCD.init()
         KBD.init()
@@ -128,6 +72,10 @@ object TUI {
             shootingKey = key
         }
     }
+    fun readyToPlay():Boolean{
+        return KBD.getKey() == '*'
+    }
+
     fun addInvaders(randomLine: Int, randomNumber: String) {
         if (randomLine == 0) {
             list0 += randomNumber
@@ -165,9 +113,7 @@ object TUI {
             cursor.write(1,startingPosition1,list1)
         }
     }
-    fun readyToPlay():Boolean{
-        return KBD.getKey() == '*' && coin >= 2
-    }
+
     fun gameOver(score: Int) { //Função para exibir a mensagem de fim de jogo
         LCD.clear() //Limpa o LCD
         cursor.write(0,0,"*** GAME OVER **")
