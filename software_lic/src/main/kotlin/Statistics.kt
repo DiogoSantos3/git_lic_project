@@ -1,5 +1,3 @@
-import java.io.File
-
 object Statistics {
 
     fun numCoins():String{
@@ -10,7 +8,11 @@ object Statistics {
     }
 
     fun addCoins(numCoin:Int){
-        FilesAccess.escrever(numCoin+2,0)
+        FilesAccess.escrever((numCoin+2).toString(),numGames())
+    }
+
+    fun addGames(numGames:Int){
+        FilesAccess.escrever(numCoins(),numGames())
     }
 
 }
