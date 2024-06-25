@@ -259,8 +259,6 @@
                     }
                 }
 
-                println(nome)
-                println(cursor.row)
             }
         }
 

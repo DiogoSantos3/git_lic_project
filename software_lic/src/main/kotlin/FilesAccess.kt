@@ -17,10 +17,15 @@ object FilesAccess {
         return PrintWriter(fileName)
     }
 
-    fun escrever(coin: String, jogo: String) {
+    fun writeStatistics(coin: String, jogo: String) {
         val pw = createWriter("x.txt")
         pw.println(coin.toString())
         pw.println(jogo.toString())
+        pw.close()
+    }
+    fun writeScores(player:String,score:String) {
+        val pw = createWriter("scores.txt")
+        pw.print(player.trim()+ ";"+score)
         pw.close()
     }
 
@@ -29,8 +34,6 @@ object FilesAccess {
         return fr.readLines()
     }
 
-    fun resetFile(fileName: String) {
-        escrever(0.toString(), 0.toString())
-    }
+
 }
 

@@ -139,8 +139,9 @@ object SpaceInvadersApp {
         }
 
         else if (TUI.gameOver() == "NEWSCORE"){
-                var newName = TUI.newScore() //quero guardar um novo nome
-                state = State.GAMEOVER
+                val newName = TUI.newScore() //quero guardar um novo nome
+                Scores.writePlayers(newName, (TUI.score*10).toString())
+                state = State.INITIAL
 
             }
         }

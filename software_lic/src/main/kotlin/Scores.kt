@@ -21,6 +21,8 @@ object Scores {
 
         return scores
     }
-
+    fun writePlayers(player:String,score:String){
+        FilesAccess.writeScores(player,score)
+    }
 
 }
