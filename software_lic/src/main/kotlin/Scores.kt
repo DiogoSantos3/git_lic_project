@@ -4,7 +4,6 @@ object Scores {
     private const val NAME_FILE = "scores.txt"
     private val scores = mutableListOf<Pair<String, Int>>() // Lista de pares (nome, pontuação)
     private var bestScore: Int = 0
-
     fun splitScores(): List<Pair<String, Int>> {
         scores.clear() // Limpa a lista de estatísticas antes de começar a preencher novamente
         val text = FilesAccess.ler(NAME_FILE)

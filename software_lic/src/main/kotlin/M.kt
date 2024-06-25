@@ -1,6 +1,4 @@
 object M {
-
-
     private const val M_MASK = 0x80
 
     fun isM():Boolean{

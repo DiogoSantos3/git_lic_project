@@ -3,7 +3,6 @@ object SerialEmitter { // Envia tramas para os diferentes módulos Serial Receiv
     val SSCORE_MASK = 0x02 //SCOREset
     val SCLOCK_MASK = 0x10 //
     val SDX_MASK = 0x08
-
     enum class Destination { LCD, SCORE }
 
     // Inicia a classe

@@ -19,7 +19,6 @@
         var bestScore : Int = 0
         private var letter = listOf('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z')
 
-
         class Cursor(val line: Int = 0,val row: Int = 1){
             fun write(line: Int,row: Int,word:String){
                 LCD.cursor(line,row)

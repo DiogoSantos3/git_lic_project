@@ -34,6 +34,7 @@ object KBD {//Ler teclas. Métodos retornam ‘0’..’9’,’#’,’*’ ou 
         return NONE
     }
 
+
     // Retorna a tecla pressionada antes do timeout em milissegundos acabar, ou NONE caso contrário.
     fun waitKey(timeout: Long): Char {
         val timeFinal = timeout + Time.getTimeInMillis() //Tempo atual em milisegundos + timeout

@@ -32,6 +32,7 @@ object FilesAccess {
     fun resetFile(fileName: String) {
         escrever(0.toString(), 0.toString())
     }
+
 }
 
 

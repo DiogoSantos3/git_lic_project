@@ -12,7 +12,7 @@ object SpaceInvadersApp {
     private const val SHOW_INVADERS_INTERVAL = 200L // Intervalo de tempo para gerar novos números aleatórios (200 ms)
     private var lastUpdateTime = System.currentTimeMillis() // Marca o tempo da última atualização (Começo do jogo)
 
-    public var cursor = TUI.Cursor()
+     var cursor = TUI.Cursor()
     var bestScore = TUI.bestScore
 
     fun addScore(score: Int): Int {

@@ -6,7 +6,6 @@ object Statistics {
     fun numGames():String{
         return FilesAccess.ler("x.txt")[1]
     }
-
     fun addCoins(numCoin:Int){
         FilesAccess.escrever((numCoin+2).toString(),numGames())
     }
