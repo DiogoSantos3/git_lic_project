@@ -1,0 +1,82 @@
+## --- Additional packages with Hardware to Simulator
+package spaceinvaders.simul    # for Modules used in Space Invaders
+
+# Generic modules to activate from Simulator
+UsbPort = UsbPort
+kbd  = Keyboard("123456789*0#",4,3,0)
+lcd  = LCD
+m    = Switch ; "manut" ; setLabel("M")
+
+# Costume modules from spaceinvaders package
+rb  = RingBuffer
+ob  = OutputBuffer
+srl = SerialReceiverParity(9)
+dl  = LCD_Dispatcher
+srs = SerialReceiverParity(7)
+sc = Score_Dispatcher
+sd = ScoreDisplay
+ca = CoinAcceptor ; "Acceptor"
+
+## --- Project Links ---
+# --------------------------------------
+# Manut
+# --------------------------------------
+m.out -> UsbPort.I7
+
+# --------------------------------------
+# Coin Acceptor
+# --------------------------------------
+UsbPort.O6 -> ca.accept
+ca.Coin -> UsbPort.I6
+
+# --------------------------------------
+# Keyboard Reader
+# --------------------------------------
+
+# Key Decode
+1 -> kbd.oe
+kbd.val -> rb.DAV
+kbd.K[0-3] -> rb.D[0-3]
+
+# Ring Buffer
+rb.DAC -> kbd.ack
+rb.Q[0-3] -> ob.D[0-3]
+rb.Wreg -> ob.Load
+
+# Output Buffer
+ob.OBfree -> rb.CTS
+ob.Q[0-3] -> UsbPort.I[0-3]
+ob.Dval -> UsbPort.I4
+UsbPort.O7 -> ob.ACK
+
+# --------------------------------------
+# SLCDC
+# --------------------------------------
+# Serial Receiver
+UsbPort.O0 -> srl./SS
+UsbPort.O3 -> srl.SDX
+UsbPort.O4-> srl.SCLK
+srl.DXval -> dl.Dval
+srl.D[0-8] -> dl.I[0-8]
+
+# LCD Dispatcher
+dl.D[1-8] -> lcd.D[0-7]
+dl.D0 -> lcd.rs
+dl.WrL -> lcd.e
+dl.done -> srl.accept
+
+# --------------------------------------
+# SSC
+# --------------------------------------
+# Serial Receiver
+UsbPort.O1  -> srs./SS
+UsbPort.O3  -> srs.SDX
+UsbPort.O4  -> srs.SCLK
+srs.Dxval   -> sc.Dval
+srs.D[0-6]  -> sc.I[0-6]
+
+# Score Dispatcher
+sc.done     -> srs.accept
+sc.WrD      -> sd.set
+sc.D[0-2]   -> sd.cmd[0-2]
+sc.D[3-6]   -> sd.data[0-3]
