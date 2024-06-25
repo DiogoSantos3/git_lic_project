@@ -1,20 +1,26 @@
 object Statistics {
 
-    fun numCoins():String{
-        return FilesAccess.ler("x.txt")[0]
-    }
-    fun numGames():String{
-        return FilesAccess.ler("x.txt")[1]
-    }
-    fun addCoins(numCoin:Int){
-        FilesAccess.escrever((numCoin+2).toString(),numGames())
+    fun numCoins(): String {
+        val lines = FilesAccess.ler("x.txt")
+        return if (lines.isNotEmpty()) lines[0] else "0"
     }
 
-    fun addGames(numGames:Int){
-        FilesAccess.escrever(numCoins(),numGames())
+    fun numGames(): String {
+        val lines = FilesAccess.ler("x.txt")
+        return if (lines.size > 1) lines[1] else "0"
     }
 
-    fun resetCounting(){
-        FilesAccess.escrever(0.toString(),0.toString())
+    fun addCoins(numCoin: Int) {
+        val numGames = numGames().toInt()
+        FilesAccess.escrever((numCoin + 2).toString(), numGames.toString())
+    }
+
+    fun addGames(numGames: Int) {
+        val numCoins = numCoins().toInt()
+        FilesAccess.escrever(numCoins.toString(), numGames.toString())
+    }
+
+    fun resetCounting() {
+        FilesAccess.escrever(0.toString(), 0.toString())
     }
 }

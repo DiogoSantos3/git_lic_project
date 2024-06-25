@@ -35,8 +35,6 @@ object SpaceInvadersApp {
 
     fun playing() {//Função principal do jogo
 
-        LCD.clear() //MUDAR
-
         cursor.displayBars() // Exibe as barras no início das linhas
         cursor.showGun(cursor.line, cursor.row) // Exibe a posição inicial da arma
         while (TUI.list0.length < 14 && TUI.list1.length < 14) { // Loop principal do jogo
@@ -76,9 +74,9 @@ object SpaceInvadersApp {
 
     }
     fun displayStats() {
-        LCD.clear()
-        cursor.write(0, 0, " Coins:${Statistics.numCoins()}          ")//MUDAR
-        cursor.write(1, 0, " Games:${Statistics.numGames()}         ")//MUDAR
+
+        cursor.write(0, 0, " Coins:${Statistics.numCoins()}          ")
+        cursor.write(1, 0, " Games:${Statistics.numGames()}         ")
     }
 
 
@@ -86,14 +84,14 @@ object SpaceInvadersApp {
 
         if(state == State.INITIAL){
 
-            var cores = Scores.splitScores()
+            val cores = Scores.splitScores()
             var position = 1 //Variável para rastrear a posição na lista
 
             for ((name, score) in cores) { //Exibir cada Pair(name, score)
-                var numCoins = Statistics.numCoins().toInt()
+                val numCoins = Statistics.numCoins().toInt()
 
                 if (M.isM()){
-                    SpaceInvadersApp.state = SpaceInvadersApp.State.MANUTENCION
+                    state = State.MANUTENCION
                     break
                 }
 
@@ -103,7 +101,7 @@ object SpaceInvadersApp {
                 }
 
                 if (TUI.readyToPlay() && numCoins >= 2) {//Verifica se queremos iniciar o jogo
-                    SpaceInvadersApp.state = SpaceInvadersApp.State.PLAYING
+                    state = State.PLAYING
                     break // Sai da função
                 }
 
@@ -121,7 +119,7 @@ object SpaceInvadersApp {
                 // Loop para verificação de moedas durante a espera
                 for (i in 1..10) {
                     if (M.isM()){
-                        SpaceInvadersApp.state = SpaceInvadersApp.State.MANUTENCION
+                        state = State.MANUTENCION
                         break
                     }
                     if(CoinAccepter.isCoin()){
@@ -133,11 +131,21 @@ object SpaceInvadersApp {
         }
 
     }
-    fun gameOover(){
-        if (TUI.gameOver() == "INITIAL"){  state = State.INITIAL}
-        else if (TUI.gameOver() == "GAMEOVER"){if (TUI.gameOver() == "INITIAL"){  state = State.GAMEOVER}}
 
-    }
+    fun gameOover(){
+        if (TUI.gameOver() == "NONEWSCORE"){//Não há bestScore (argumento)
+
+            state = State.INITIAL
+        }
+
+        else if (TUI.gameOver() == "NEWSCORE"){
+                var newName = TUI.newScore() //quero guardar um novo nome
+                state = State.GAMEOVER
+
+            }
+        }
+
+
 }
 
 

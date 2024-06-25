@@ -32,11 +32,5 @@ object FilesAccess {
     fun resetFile(fileName: String) {
         escrever(0.toString(), 0.toString())
     }
-
 }
 
-
-fun main() {
-    FilesAccess.escrever(123.toString(), 2.toString())
-    FilesAccess.ler("x.txt")
-}

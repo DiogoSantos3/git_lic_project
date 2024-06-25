@@ -33,11 +33,12 @@
                 cursor.write(1,0,"]")
             }
         }
-
         fun init(){
             LCD.init()
             KBD.init()
         }
+
+
         fun handleKeyPress() {
             when (val key : Char = KBD.getKey()) {
                 '*' -> changeLine()
@@ -50,13 +51,14 @@
             if (cursor.line == 0 && list0.isNotEmpty() && shootingKey == list0[0]) {
                 score = SpaceInvadersApp.addScore(score)
                 list0 = list0.substring(1)
-                displayWrite(list0,  list1, cursor.line, 1, hit = true)
+                displayWrite(list0.drop(0),  list1, cursor.line, 1, hit = true)
 
             } else if (cursor.line == 1 && list1.isNotEmpty() && shootingKey == list1[0]) {
                 score =  SpaceInvadersApp.addScore(score)
                 list1 =  list1.substring(1)
-                displayWrite(list0,  list1, cursor.line, 1, hit = true)
+                displayWrite(list0,  list1.drop(0), cursor.line, 1, hit = true)
             }
+
         }
         private fun changeLine() {
 
@@ -73,11 +75,14 @@
             }
         }
         fun readyToPlay():Boolean{
-            return KBD.getKey() == '*'
+            if (KBD.getKey() == '*') {
+                LCD.clear()
+                return true
+            }
+            else{return false}
         }
-
-
         fun addInvaders(randomLine: Int, randomNumber: String) {
+
             if (randomLine == 0) {
                 list0 += randomNumber
             } else {
@@ -86,11 +91,7 @@
             displayWrite(list0, list1, randomLine, 1, hit)
         }
 
-        fun displayStats() {
-            LCD.clear()
-            cursor.write(0, 0, " Coins:${Statistics.numCoins()}          ")//MUDAR
-            cursor.write(1, 0, " Games:${Statistics.numGames()}         ")//MUDAR
-        }
+
 
         fun man():String {
             cursor.write(0, 0, " On Maintenance ")
@@ -104,7 +105,7 @@
                 }
                 when (key) {
                     '*' -> {
-                        displayStats()
+                        SpaceInvadersApp.displayStats()
                         while (true) {
                             val innerKey: Char = KBD.getKey()
                              if (innerKey in '0'..'9' || innerKey == '*') {
@@ -157,7 +158,6 @@
                 }
             }
         }
-        private var lastUpdateTime = System.currentTimeMillis() // Marca o tempo da última atualização (Começo do jogo)
 
         private fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
 
@@ -186,48 +186,88 @@
             else{//Atualiza ambas as linhas independentemente da linha atual
                 cursor.write(0,startingPosition0,list0)
                 cursor.write(1,startingPosition1,list1)
+
             }
         }
 
         fun gameOver():String { //Função para exibir a mensagem de fim de jogo
-            LCD.clear() //Limpa o LCD
+
             cursor.write(0,0,"*** GAME OVER **")
             cursor.write(1,0,"Score: ${score*10}            ")
+
             if (score * 10 > bestScore){
                 Time.sleep(1500)
                 println("YUDWVAUYDVASHVDKJWAVBKDBVAWIBVADSKJVDKJAWVDHVASJHDVJWHA")
-                return newScore()
+                return "NEWSCORE"
             }
-            return "GAMEOVER"
+            return "NONEWSCORE"
         }
 
-        private fun newScore() :String{
+         fun newScore(): String {
             var count = 0
             LCD.clear()
+            var name = CharArray(10) { ' ' } // Inicializando com espaços ou tamanho apropriado
+            var row = 0
 
-            while (true)    {
-                Time.sleep(500)
+            // Inicializando a primeira letra como 'A'
+            name[row] = 'A'
+            var nome = name.joinToString("")
+
+            cursor = Cursor(0, row)
+            cursor.write(0, 0, " Name:${nome}") // Atualização inicial do display
+            cursor.write(1, 0, " Score: ${score * 10}            ")
+
+            while (true) {
+                Time.sleep(100)
                 val key = KBD.getKey()
 
-                if (key == '2') count++
+                nome = name.joinToString("") // Atualiza o nome com base no array `name`
+                cursor.write(0, 0, " Name:${nome}") // Atualização contínua do display
 
-                if (key == '8'){
-                    if (letter[count] != 'A'){count--}
-
+                when (key) {
+                    '2' -> {
+                        if (count < letter.size - 1) {
+                            count++
+                            name[row] = letter[count]
+                        }
+                    }
+                    '8' -> {
+                        if (count > 0) {
+                            count--
+                            name[row] = letter[count]
+                        }
+                    }
+                    '4' -> {
+                        if (row > 0) {
+                            row--
+                            count = letter.indexOf(name[row]) // Atualiza `count` com base na letra atual
+                            cursor = Cursor(0, row)
+                        }
+                    }
+                    '6' -> {
+                        if (row < name.size - 1) {
+                            row++
+                            if (name[row] == ' ') { // Inicializa nova posição com 'A' se vazia
+                                name[row] = 'A'
+                            }
+                            count = letter.indexOf(name[row]) // Atualiza `count` com base na letra atual
+                            cursor = Cursor(0, row)
+                        }
+                    }
+                    '5' -> {
+                        return nome
+                    }
                 }
 
-                if (key == '5' ) {
-                    return "INITIAL"
-                }
-
-                cursor.write(0, 0, " Name:${letter[count]}")
-                cursor.write(1,0," Score: ${score*10}            ")
-
-
+                println(nome)
+                println(cursor.row)
             }
-
-
         }
+
+
+
+
+
         fun writeKey(time: Long) {
             var temp = KBD.waitKey(time)//Obtem a tecla premida
             while (temp != KBD.NONE) {//Enquando a tecla não for nenhuma...
