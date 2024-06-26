@@ -197,7 +197,6 @@
 
             if (score * 10 > bestScore){
                 Time.sleep(1500)
-                println("YUDWVAUYDVASHVDKJWAVBKDBVAWIBVADSKJVDKJAWVDHVASJHDVJWHA")
                 return "NEWSCORE"
             }
             return "NONEWSCORE"

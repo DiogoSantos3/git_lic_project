@@ -4,25 +4,39 @@ object Scores {
     private const val NAME_FILE = "scores.txt"
     private val scores = mutableListOf<Pair<String, Int>>() // Lista de pares (nome, pontuação)
     private var bestScore: Int = 0
+    private const val SCORES_FILE = "scores.txt"
+    fun splitScores(): List<Pair<String, String>> {
+        val scores = readScores()
 
-    fun splitScores(): List<Pair<String, Int>> {
-        scores.clear() // Limpa a lista de estatísticas antes de começar a preencher novamente
-        val text = FilesAccess.ler(NAME_FILE)
-
-        for (entry in text) { // Processa cada entrada de texto para extrair nome e pontuação
-            val parts = entry.split(";") // Divide a string
-            val name = parts[0]
-            val score = parts[1].toInt()
-            scores.add(Pair(name, score)) // Add Pair(name, score) à lista (statistics)
-        }
-
-        scores.sortByDescending { it.second } // Ordena a lista por ordem decrescente
-        bestScore = scores.first().second
-
-        return scores
+        return scores.mapNotNull { score ->
+            val parts = score.split(";")
+            if (parts.size == 2) {
+                parts[0] to parts[1]
+            } else {
+                null
+            }
+        }.sortedByDescending { it.second.toIntOrNull() ?: 0 }
     }
-    fun writePlayers(player:String,score:String){
-        FilesAccess.writeScores(player,score)
+    fun readScores(): List<String> {
+        return FilesAccess.ler(SCORES_FILE)
+    }
+    fun getTopScore(): Pair<String, String>? {
+        return splitScores().firstOrNull()
+    }
+    fun writePlayers(name: String, score: String) {
+        val pw = FilesAccess.createWriter(SCORES_FILE, append = true)
+        println()
+        pw.println("${name.trim()};$score")
+        pw.close()
     }
 
+    var names = splitScores()
+
+
+
+
+}
+
+fun main(){
+    println(Scores.splitScores())
 }

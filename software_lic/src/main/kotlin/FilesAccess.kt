@@ -1,6 +1,7 @@
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.PrintWriter
+import java.io.FileWriter
 object FilesAccess {
     private const val NAME_STATS_FILE = "scores.txt"
     private const val X = "x.txt"
@@ -13,26 +14,25 @@ object FilesAccess {
         return NAME_STATS_FILE.count()
     }
 
-    fun createWriter(fileName: String): PrintWriter {
-        return PrintWriter(fileName)
-    }
 
     fun writeStatistics(coin: String, jogo: String) {
-        val pw = createWriter("x.txt")
-        pw.println(coin.toString())
-        pw.println(jogo.toString())
+        val pw = createWriter(X)
+        pw.println(coin)
+        pw.println(jogo)
         pw.close()
     }
-    fun writeScores(player:String,score:String) {
-        val pw = createWriter("scores.txt")
-        pw.print(player.trim()+ ";"+score)
-        pw.close()
+
+
+    fun createWriter(fileName: String, append: Boolean = false): PrintWriter {
+        return PrintWriter(FileWriter(fileName, append))
     }
+
 
     fun ler(fileName: String): List<String> {
         val fr = createReader(fileName)
         return fr.readLines()
     }
+
 
 
 }

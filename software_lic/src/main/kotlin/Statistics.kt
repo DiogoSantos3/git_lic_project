@@ -10,14 +10,20 @@ object Statistics {
         return if (lines.size > 1) lines[1] else "0"
     }
 
-    fun addCoins(numCoin: Int) {
+    fun addCoins(ACK:Boolean) {
         val numGames = numGames().toInt()
-        FilesAccess.writeStatistics((numCoin + 2).toString(), numGames.toString())
+        val numCoins = numCoins().toInt()
+        if (ACK){FilesAccess.writeStatistics((numCoins + 2).toString(), numGames.toString())}
+        else{FilesAccess.writeStatistics((numCoins -2 ).toString(), numGames.toString())}
+
     }
 
-    fun addGames(numGames: Int) {
+
+
+    fun addGames() {
         val numCoins = numCoins().toInt()
-        FilesAccess.writeStatistics(numCoins.toString(), numGames.toString())
+        val numGames = numGames().toInt()
+        FilesAccess.writeStatistics(numCoins.toString(), (numGames + 1).toString())
     }
 
     fun resetCounting() {

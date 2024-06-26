@@ -96,8 +96,10 @@ object SpaceInvadersApp {
                 }
 
                 if(CoinAccepter.isCoin()){
-                    cursor.write(1,0," Game X  X X  ${numCoins}$    ")
-                    Statistics.addCoins(Statistics.numCoins().toInt())
+                    Statistics.addCoins(true)
+                    if(Statistics.numCoins().toInt() <=9){cursor.write(1,0," Game X  X X  ${Statistics.numCoins()}$    ")}
+                    else{cursor.write(1,0," Game X  X X ${Statistics.numCoins()}$    ")}
+
                 }
 
                 if (TUI.readyToPlay() && numCoins >= 2) {//Verifica se queremos iniciar o jogo
@@ -106,7 +108,7 @@ object SpaceInvadersApp {
                 }
 
                 TUI.cursor.write(0,1,"Space Invaders ")
-                cursor.write(1, 0, "$position-$name    $score     ") //Escreve a pontuação
+                cursor.write(1, 0, "${position}-${name}         $score     ") //Escreve a pontuação
 
 
                 if (Scores.num_of_players == position) {//Verifica ja percorreu a a lista toda e reseta a position
@@ -116,6 +118,7 @@ object SpaceInvadersApp {
                 position++
                 Time.sleep(700)
 
+
                 // Loop para verificação de moedas durante a espera
                 for (i in 1..10) {
                     if (M.isM()){
@@ -123,8 +126,11 @@ object SpaceInvadersApp {
                         break
                     }
                     if(CoinAccepter.isCoin()){
-                        cursor.write(1,0," Game X  X X  ${Statistics.numCoins()}$    ")
-                        Statistics.addCoins(Statistics.numCoins().toInt())}
+                        Statistics.addCoins(true)
+                        if(Statistics.numCoins().toInt() <=9){cursor.write(1,0," Game X  X X  ${Statistics.numCoins()}$    ")}
+                        else{cursor.write(1,0," Game X  X X ${Statistics.numCoins()}$    ")}
+
+                        }
                     Time.sleep(200)// Espera 200 ms antes de próxima verificação
                 }
             }
@@ -133,14 +139,18 @@ object SpaceInvadersApp {
     }
 
     fun gameOover(){
-        if (TUI.gameOver() == "NONEWSCORE"){//Não há bestScore (argumento)
 
+        if (TUI.gameOver() == "NONEWSCORE"){//Não há bestScore (argumento)
+            Statistics.addGames()
+            Statistics.addCoins(false)
             state = State.INITIAL
         }
 
         else if (TUI.gameOver() == "NEWSCORE"){
                 val newName = TUI.newScore() //quero guardar um novo nome
-                Scores.writePlayers(newName, (TUI.score*10).toString())
+                Statistics.addGames()
+                Statistics.addCoins(false)
+                Scores.writePlayers(newName,(TUI.score*10).toString())
                 state = State.INITIAL
 
             }
