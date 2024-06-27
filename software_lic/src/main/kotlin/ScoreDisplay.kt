@@ -11,7 +11,7 @@ object ScoreDisplay { // Controla o mostrador de pontuação.
     // Envia comando para atualizar o valor do mostrador de pontuação.
     fun setScore(value: Int) {
         // Formata o valor com 5 dígitos, preenchendo com zeros à esquerda.
-        val formattedValue = value.toString().padStart(5, '0')
+        val formattedValue = value.toString().padStart(6, '0')
         var num = 5
 
         // Itera sobre cada caractere do valor formatado.

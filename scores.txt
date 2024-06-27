@@ -2,8 +2,5 @@ Carlos;0
 CUAWBI;1
 Pedro;12
 Diogo;32
-MIguel;21
-BBBBA;30
-C;20
-A;10
-J;40
+Miguel;21
+CA;60

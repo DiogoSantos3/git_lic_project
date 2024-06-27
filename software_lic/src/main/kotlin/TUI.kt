@@ -3,8 +3,7 @@
     import kotlin.system.exitProcess
 
     object TUI {
-        var list0: String = "" // Lista para armazenar números aleatórios na linha 0
-        var list1: String = "" // Lista para armazenar números aleatórios na linha 1
+
         private var nColUP = 0
         private var nColDOWN = 0
         private var actualColumn = Column.UP
@@ -13,9 +12,9 @@
 
         enum class Column { UP, DOWN }
         var cursor = Cursor()
-        private var shootingKey = ' ' // Inicializa a tecla de tiro
-        var score: Int = 0
-        private var hit = false
+
+
+
         var bestScore : Int = 0
         private var letter = listOf('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z')
 
@@ -39,39 +38,20 @@
         }
 
 
-        fun handleKeyPress() {
+        fun handleKeyPress(line: Int) {
             when (val key : Char = KBD.getKey()) {
-                '*' -> changeLine()
-                '#' -> checkHit()
-                else -> displayKey(key)
+                '*' -> SpaceInvadersApp.changeLine()
+                '#' -> SpaceInvadersApp.checkHit()
+                else -> displayKey(key,line)
             }
         }
-        private fun checkHit() {
 
-            if (cursor.line == 0 && list0.isNotEmpty() && shootingKey == list0[0]) {
-                score = SpaceInvadersApp.addScore(score)
-                list0 = list0.substring(1)
-                displayWrite(list0.drop(0),  list1, cursor.line, 1, hit = true)
 
-            } else if (cursor.line == 1 && list1.isNotEmpty() && shootingKey == list1[0]) {
-                score =  SpaceInvadersApp.addScore(score)
-                list1 =  list1.substring(1)
-                displayWrite(list0,  list1.drop(0), cursor.line, 1, hit = true)
-            }
-
-        }
-        private fun changeLine() {
-
-            var linee = cursor.line
-            cursor.write(linee,cursor.row," ")
-            linee = if (cursor.line == 0) 1 else 0
-            cursor.showGun(linee, cursor.row)
-            cursor = Cursor(linee,cursor.row)
-        }
-        private fun displayKey(key: Char) {
+        private fun displayKey(key: Char,line: Int) {
             if (key != KBD.NONE) {
-                cursor.write(cursor.line, 0,key.toString())
-                shootingKey = key
+                println(key)
+                cursor.write(line, 0,key.toString())
+                SpaceInvadersApp.shootingKey = key
             }
         }
         fun readyToPlay():Boolean{
@@ -81,26 +61,19 @@
             }
             else{return false}
         }
-        fun addInvaders(randomLine: Int, randomNumber: String) {
-
-            if (randomLine == 0) {
-                list0 += randomNumber
-            } else {
-                list1 += randomNumber
-            }
-            displayWrite(list0, list1, randomLine, 1, hit)
-        }
 
 
 
-        fun man():String {
+
+        fun man(): String {
             cursor.write(0, 0, " On Maintenance ")
             cursor.write(1, 0, "*-Count  #-ShutD  ")
 
             while (true) {
                 val key: Char = KBD.getKey()
-                if (key in '0'..'9' ) {
-                    println("DHVWAUHDHAWDJHA")
+                if (key in '0'..'9') {
+                    println("Starting game without coin.")
+                    LCD.clear()
                     return "PLAYING"
                 }
                 when (key) {
@@ -108,25 +81,23 @@
                         SpaceInvadersApp.displayStats()
                         while (true) {
                             val innerKey: Char = KBD.getKey()
-                             if (innerKey in '0'..'9' || innerKey == '*') {
+                            if (innerKey in '0'..'9') {
+                                LCD.clear()
+                                return "PLAYING"
+                            } else if (innerKey == '*') {
                                 return "MANUTENCION"
-                            }
-                            else if (innerKey == '#'){
-                                 cursor.write(0, 0, " Reset Counting?         ") // MUDAR
-                                 cursor.write(1, 0, " 5-Yes other-No  ") // MUDAR
-
-                                 while (true) {
-                                     val shutdownKey: Char = KBD.getKey()
-                                     if (shutdownKey == '5') {
-                                         Statistics.resetCounting()
-                                         return "MANUTENCION"
-                                     } else if (shutdownKey in '0'..'9' || shutdownKey == '*' || shutdownKey == '#') {
-                                         return "MANUTENCION"
-                                     }
-                                 }
-
-
-
+                            } else if (innerKey == '#') {
+                                cursor.write(0, 0, " Reset Counting?         ") // MUDAR
+                                cursor.write(1, 0, " 5-Yes other-No  ") // MUDAR
+                                while (true) {
+                                    val shutdownKey: Char = KBD.getKey()
+                                    if (shutdownKey == '5') {
+                                        Statistics.resetCounting()
+                                        return "MANUTENCION"
+                                    } else if (shutdownKey in '0'..'9' || shutdownKey == '*' || shutdownKey == '#') {
+                                        return "MANUTENCION"
+                                    }
+                                }
                             }
                         }
                     }
@@ -142,24 +113,11 @@
                             }
                         }
                     }
-                    else -> {
-                        while (true) {
-                            val shutdownKey: Char = KBD.getKey()
-
-
-                            if (shutdownKey in '0'..'9' ) {
-                                println("DHVWAUHDHAWDJHA")
-                                return "PLAYING"
-                            }
-                            return "MANUTENCION"
-
-                        }
-                    }
                 }
             }
         }
 
-        private fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
+        fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
 
             val maxLength = 17
             val startingPosition0 = maxLength - (list0.length + 1)
@@ -190,22 +148,12 @@
             }
         }
 
-        fun gameOver():String { //Função para exibir a mensagem de fim de jogo
 
-            cursor.write(0,0,"*** GAME OVER **")
-            cursor.write(1,0,"Score: ${score*10}            ")
-
-            if (score * 10 > bestScore){
-                Time.sleep(1500)
-                return "NEWSCORE"
-            }
-            return "NONEWSCORE"
-        }
 
          fun newScore(): String {
             var count = 0
-            LCD.clear()
-            var name = CharArray(10) { ' ' } // Inicializando com espaços ou tamanho apropriado
+
+            val name = CharArray(10) { ' ' } // Inicializando com espaços ou tamanho apropriado
             var row = 0
 
             // Inicializando a primeira letra como 'A'
@@ -214,14 +162,14 @@
 
             cursor = Cursor(0, row)
             cursor.write(0, 0, " Name:${nome}") // Atualização inicial do display
-            cursor.write(1, 0, " Score: ${score * 10}            ")
+            cursor.write(1, 0, " Score: ${SpaceInvadersApp.score}            ")
 
             while (true) {
                 Time.sleep(100)
                 val key = KBD.getKey()
 
                 nome = name.joinToString("") // Atualiza o nome com base no array `name`
-                cursor.write(0, 0, " Name:${nome}") // Atualização contínua do display
+                cursor.write(0, 0, " Name:${nome}                ") // Atualização contínua do display
 
                 when (key) {
                     '2' -> {
