@@ -116,7 +116,6 @@
                 }
             }
         }
-
         fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
 
             val maxLength = 17

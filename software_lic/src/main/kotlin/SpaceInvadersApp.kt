@@ -54,20 +54,18 @@ object SpaceInvadersApp {
     fun manutencion() {
         var ack = false
         while (M.isM()) {
-            when (TUI.man()) {
-                "MANUTENCION" -> {
-                    Time.sleep(100)
-                    ack = false
-                    continue
-                }
+            val result = TUI.man()
+            when (result) {
                 "PLAYING" -> {
-                    Time.sleep(100)
                     state = State.PLAYING
                     ack = true
                     break
                 }
-                "INITIAL" -> {
+                "MANUTENCION" -> {
+                    // Continue no modo de manutenção
                     Time.sleep(100)
+                }
+                "INITIAL" -> {
                     state = State.INITIAL
                     ack = false
                     break
@@ -76,6 +74,7 @@ object SpaceInvadersApp {
         }
         state = if (ack) State.PLAYING else State.INITIAL
     }
+
 
 
     fun displayStats() {
@@ -88,7 +87,7 @@ object SpaceInvadersApp {
 
         if (state == State.INITIAL) {
 
-            val cores = Scores.splitScores()
+            val cores = Scores.splitScores().take(20)
             var position = 1 //Variável para rastrear a posição na lista
 
             for ((name, score) in cores) { //Exibir cada Pair(name, score)
@@ -118,12 +117,12 @@ object SpaceInvadersApp {
                 cursor.write(1, 0, "${position}-${name}         $score     ") //Escreve a pontuação
 
 
-                if (Scores.num_of_players == position) {//Verifica ja percorreu a a lista toda e reseta a position
+                if (Scores.num_of_players == position ) {//Verifica ja percorreu a a lista toda e reseta a position
                     position = 0
                 }
 
                 position++
-                Time.sleep(700)
+                Time.sleep(100)
 
 
                 // Loop para verificação de moedas durante a espera
@@ -141,7 +140,7 @@ object SpaceInvadersApp {
                         }
 
                     }
-                    Time.sleep(200)// Espera 200 ms antes de próxima verificação
+                    Time.sleep(100)// Espera 200 ms antes de próxima verificação
                 }
             }
         }
