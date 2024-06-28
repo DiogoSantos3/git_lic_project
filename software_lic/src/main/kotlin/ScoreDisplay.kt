@@ -5,6 +5,7 @@ object ScoreDisplay { // Controla o mostrador de pontuação.
     // Inicializa a classe, estabelecendo os valores iniciais.
     fun init() {
         SerialEmitter.init() // Inicializa o emissor serial.
+        off(true)
         off(false) // Liga o display de pontuação.
     }
 

@@ -49,7 +49,7 @@ object SerialEmitter { // Envia tramas para os diferentes módulos Serial Receiv
         HAL.setBits(mask)//"Transição ascendente do LCDset" -> significa que a transmissão foi concluída
     }
 }
-    fun main(){
+fun main(){
     HAL.init()
     SerialEmitter.init()
     SerialEmitter.send(SerialEmitter.Destination.LCD,0x155,9)

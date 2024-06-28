@@ -46,7 +46,10 @@ object SpaceInvadersApp {
             TUI.handleKeyPress(cursor.line)
             Time.sleep(100) // Delay
         }
-
+        Statistics.addGames()//TIRA COINS AQUI??? OU NO GAMEOVER???
+        Statistics.addCoins(false)//TIRA COINS AQUI??? OU NO GAMEOVER???
+        list0 = ""
+        list1 = ""
         state = State.GAMEOVER
 
     }
@@ -99,12 +102,13 @@ object SpaceInvadersApp {
                 }
 
                 if (CoinAccepter.isCoin()) {
-
                     Statistics.addCoins(true)
                     if (Statistics.numCoins().toInt() <= 9) {
                         cursor.write(1, 0, " Game X  X X  ${Statistics.numCoins()}$    ")
+                        Time.sleep(1500)
                     } else {
                         cursor.write(1, 0, " Game X  X X ${Statistics.numCoins()}$    ")
+                        Time.sleep(1500)
                     }
 
                 }
@@ -114,8 +118,17 @@ object SpaceInvadersApp {
                     break // Sai da função
                 }
 
+
                 TUI.cursor.write(0, 1, "Space Invaders ")
-                cursor.write(1, 0, "${position}-${name}         $score     ") //Escreve a pontuação
+                cursor.write(1, 0, "${position}-${name}   $score                   ") //Escreve a pontuação
+                Time.sleep(1200)
+                if (Statistics.numCoins().toInt() <= 9) {
+                    cursor.write(1, 0, " Game X  X X  ${Statistics.numCoins()}$    ")
+                    Time.sleep(1000)
+                } else {
+                    cursor.write(1, 0, " Game X  X X ${Statistics.numCoins()}$    ")
+                    Time.sleep(1000)
+                }
 
 
                 if (Scores.num_of_players == position ) {//Verifica ja percorreu a a lista toda e reseta a position
@@ -123,11 +136,11 @@ object SpaceInvadersApp {
                 }
 
                 position++
-                Time.sleep(1000)
+
                 println(Statistics.numCoins())
 
                 // Loop para verificação de moedas durante a espera
-                for (i in 1..10) {
+                for (i in 1..5) {
                     if (M.isM()) {
                         state = State.MANUTENCION
                         break
@@ -136,8 +149,11 @@ object SpaceInvadersApp {
                         Statistics.addCoins(true)
                         if (Statistics.numCoins().toInt() <= 9) {
                             cursor.write(1, 0, " Game X  X X  ${Statistics.numCoins()}$    ")
+                            Time.sleep(1200)
+
                         } else {
                             cursor.write(1, 0, " Game X  X X ${Statistics.numCoins()}$    ")
+                            Time.sleep(1200)
                         }
 
                     }
@@ -203,15 +219,13 @@ object SpaceInvadersApp {
         cursor.write(0, 0, "*** GAME OVER **")
         cursor.write(1, 0, "Score: ${SpaceInvadersApp.score}            ")
         if (score < topScore?.toInt()!!) {
-            Statistics.addGames()
-            Statistics.addCoins(false)
+
             state = State.INITIAL
             return
 
         } else {
             val newName = TUI.newScore() //quero guardar um novo nome
-            Statistics.addGames()
-            Statistics.addCoins(false)
+
             Scores.writePlayers(newName, (score).toString())
             state = State.INITIAL
             return

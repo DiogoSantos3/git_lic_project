@@ -51,6 +51,10 @@ object KBD {//Ler teclas. Métodos retornam ‘0’..’9’,’#’,’*’ ou 
 
 
 fun main(){
+
     KBD.init()
-    KBD.waitKey(99999999999)
+    while (true){
+        println(KBD.waitKey(99999999999))
+    }
+
 }

@@ -35,8 +35,8 @@ object LCD{//Escreve no LCD usando a interface a 4 bits
 
     //Escreve um byte de comandos/dados no LCD em série
     private fun writeByteSerial(rs:Boolean, data:Int){
-            val sr = if (rs) 1 else 0
-            SerialEmitter.send(SerialEmitter.Destination.LCD,data.shl(1) + sr ,9)
+        val sr = if (rs) 1 else 0
+        SerialEmitter.send(SerialEmitter.Destination.LCD,data.shl(1) + sr ,9)
     }
 
     //Escreve um byte de comandos/dados no LCD
