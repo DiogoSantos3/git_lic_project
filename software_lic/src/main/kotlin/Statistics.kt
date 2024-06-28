@@ -1,5 +1,5 @@
 object Statistics {
-    private const val NAME_STATS_FILE = "x.txt"
+    private const val NAME_STATS_FILE = "statistics.txt"
     fun numCoins(): String {
         val lines = FilesAccess.ler(NAME_STATS_FILE)
         return if (lines.isNotEmpty()) lines[0] else "0"

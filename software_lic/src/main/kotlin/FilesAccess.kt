@@ -3,8 +3,8 @@ import java.io.FileReader
 import java.io.PrintWriter
 import java.io.FileWriter
 object FilesAccess {
-    private const val NAME_STATS_FILE = "scores.txt"
-    private const val X = "x.txt"
+    private const val NAME_STATS_FILE = "SIG_scores.txt"
+    private const val X = "statistics.txt"
     private var num_of_players = NAME_STATS_FILE.count()
     fun createReader(fileName: String): BufferedReader {
         return BufferedReader(FileReader(fileName))

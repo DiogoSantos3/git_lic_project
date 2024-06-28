@@ -1,10 +1,10 @@
 object Scores {
-    private val text = FilesAccess.ler("scores.txt")
+    private val text = FilesAccess.ler("SIG_scores.txt")
     var num_of_players = text.count()
-    private const val NAME_FILE = "scores.txt"
-    private val scores = mutableListOf<Pair<String, Int>>() // Lista de pares (nome, pontuação)
-    private var bestScore: Int = 0
-    private const val SCORES_FILE = "scores.txt"
+
+    private const val SCORES_FILE = "SIG_scores.txt"
+
+
     fun splitScores(): List<Pair<String, String>> {
         val scores = readScores()
 

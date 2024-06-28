@@ -7,7 +7,7 @@
         private var nColUP = 0
         private var nColDOWN = 0
         private var actualColumn = Column.UP
-        private const val NAME_FILE = "scores.txt"
+        private const val NAME_FILE = "SIG_scores.txt"
         private val text = File(NAME_FILE).readLines()
 
         enum class Column { UP, DOWN }

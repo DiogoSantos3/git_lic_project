@@ -201,7 +201,7 @@ object SpaceInvadersApp {
     fun gameOover() {
         cursor.write(0, 0, "*** GAME OVER **")
         cursor.write(1, 0, "Score: ${SpaceInvadersApp.score}            ")
-        if (score < bestScore) {
+        if (score < topScore?.toInt()!!) {
             Statistics.addGames()
             Statistics.addCoins(false)
             state = State.INITIAL
