@@ -20,8 +20,8 @@ object Scores {
     fun readScores(): List<String> {
         return FilesAccess.ler(SCORES_FILE)
     }
-    fun getTopScore(): String? {
-        return splitScores().firstOrNull()?.second
+    fun getTopScore(): String {
+        return splitScores().first().second
     }
     fun writePlayers(name: String, score: String) {
         val pw = FilesAccess.createWriter(SCORES_FILE, append = true)

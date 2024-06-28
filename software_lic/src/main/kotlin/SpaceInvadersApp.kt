@@ -99,6 +99,7 @@ object SpaceInvadersApp {
                 }
 
                 if (CoinAccepter.isCoin()) {
+
                     Statistics.addCoins(true)
                     if (Statistics.numCoins().toInt() <= 9) {
                         cursor.write(1, 0, " Game X  X X  ${Statistics.numCoins()}$    ")
@@ -122,8 +123,8 @@ object SpaceInvadersApp {
                 }
 
                 position++
-                Time.sleep(100)
-
+                Time.sleep(1000)
+                println(Statistics.numCoins())
 
                 // Loop para verificação de moedas durante a espera
                 for (i in 1..10) {

@@ -1,26 +1,28 @@
 object CoinAccepter{
-    private var lastState : Boolean = false
+    private var lastState : Boolean = true
     private var COIN_MASK = 0x40
     var coin = 0
     fun isCoin():Boolean{
 
-        if(HAL.isBit(COIN_MASK)){
-            if (!lastState){
+        if(!HAL.isBit(COIN_MASK) && lastState ){
+            lastState = false
+            println("NO COIN")
 
-                HAL.setBits(COIN_MASK)
-            }
-            HAL.clrBits(COIN_MASK)
-
-            return true
         }
+
+        if (HAL.isBit(COIN_MASK) && !lastState ){
+            lastState= true
+
+            println("NO COIN 2")
+            return true
+
+
+
+        }
+
 
         return false
     }
 
-    fun countCoin():Int{
 
-        if (isCoin())coin++
-        return coin
-
-    }
 }
