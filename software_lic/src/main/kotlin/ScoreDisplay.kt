@@ -45,6 +45,10 @@ fun main() {
     for (x in 0..100) {
         Time.sleep(1000) // Espera 1 segundo entre cada incremento.
         ScoreDisplay.setScore(x) // Atualiza o display com o valor atual de x.
+        Time.sleep(200)
+        ScoreDisplay.off(true) // Desliga o display de pontuação.
+        Time.sleep(200)
+        ScoreDisplay.off(false) // Desliga o display de pontuação.
         SerialEmitter.send(SerialEmitter.Destination.SCORE, 0b0000110, 7) // Atualiza o display.
     }
 

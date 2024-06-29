@@ -46,7 +46,7 @@ object LCD{//Escreve no LCD usando a interface a 4 bits
     }
 
     //Escrever mensagem de controlo
-    private fun writeCMD(data:Int) {writeByte(false,data)}
+    fun writeCMD(data:Int) {writeByte(false,data)}
 
     //Escrever mensagem de dados
     private fun writeDATA(data:Int){writeByte(true,data)}
@@ -116,6 +116,9 @@ fun main() {
     while (true) {
         LCD.clear()
         LCD.write("Hello World")
+        Thread.sleep(2000)
+        println("OFF?")
+        LCD.writeCMD(0b00001111)
         Thread.sleep(2000)
     }
 }

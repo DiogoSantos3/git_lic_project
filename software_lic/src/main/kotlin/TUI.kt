@@ -12,6 +12,7 @@ object TUI {
 
     enum class Column { UP, DOWN }
     var cursor = Cursor()
+    var NONE = ' '
 
 
 
@@ -36,86 +37,10 @@ object TUI {
         LCD.init()
         KBD.init()
     }
+    fun getKey():Char{return KBD.getKey()}
 
+    fun clear(){return LCD.clear()}
 
-    fun handleKeyPress(line: Int) {
-        when (val key : Char = KBD.getKey()) {
-            '*' -> SpaceInvadersApp.changeLine()
-            '#' -> SpaceInvadersApp.checkHit()
-            else -> displayKey(key,line)
-        }
-    }
-
-
-    private fun displayKey(key: Char,line: Int) {
-        if (key != KBD.NONE) {
-            println(key)
-            cursor.write(line, 0,key.toString())
-            SpaceInvadersApp.shootingKey = key
-        }
-    }
-    fun readyToPlay():Boolean{
-        if (KBD.getKey() == '*') {
-            LCD.clear()
-            return true
-        }
-        else{return false}
-    }
-
-
-
-
-    fun man(): String {
-        cursor.write(0, 0, " On Maintenance ")
-        cursor.write(1, 0, "*-Count  #-ShutD  ")
-
-        while (true) {
-            val key: Char = KBD.getKey()
-            if (key in '0'..'9') {
-                println("Starting game without coin.")
-                LCD.clear()
-                return "PLAYING"
-            }
-            when (key) {
-                '*' -> {
-                    SpaceInvadersApp.displayStats()
-                    while (true) {
-                        val innerKey: Char = KBD.getKey()
-                        if (innerKey in '0'..'9') {
-
-                            return "RESET"
-                        } else if (innerKey == '*') {
-                            return "MANUTENCION"
-                        } else if (innerKey == '#') {
-                            cursor.write(0, 0, " Reset Counting?         ") // MUDAR
-                            cursor.write(1, 0, " 5-Yes other-No  ") // MUDAR
-                            while (true) {
-                                val shutdownKey: Char = KBD.getKey()
-                                if (shutdownKey == '5') {
-                                    Statistics.resetCounting()
-                                    return "MANUTENCION"
-                                } else if (shutdownKey in '0'..'9' || shutdownKey == '*' || shutdownKey == '#') {
-                                    return "MANUTENCION"
-                                }
-                            }
-                        }
-                    }
-                }
-                '#' -> {
-                    cursor.write(0, 0, "    Shut Down?         ") // MUDAR
-                    cursor.write(1, 0, " 5-Yes other-No   ") // MUDAR
-                    while (true) {
-                        val shutdownKey: Char = KBD.getKey()
-                        if (shutdownKey == '5') {
-                            exitProcess(0)
-                        } else if (shutdownKey in '0'..'9' || shutdownKey == '*' || shutdownKey == '#') {
-                            return "MANUTENCION"
-                        }
-                    }
-                }
-            }
-        }
-    }
     fun displayWrite(list0: String, list1: String, line: Int, row: Int, hit: Boolean) {
 
         val maxLength = 17
@@ -125,13 +50,13 @@ object TUI {
 
         if (hit) { //Se um 'hit' ocorrer, limpa apenas a posição do hit e reexibe a linha
             if (line == 0) {
-                LCD.clear()//XXXXXXXXX
+                TUI.clear()//XXXXXXXXX
                 cursor.displayBars()//XXXXXXXXX
                 cursor.write(0,startingPosition0,list0)
                 cursor.write(1,startingPosition1,list1)
             }
             else {
-                LCD.clear()//XXXXXXXXX
+                TUI.clear()//XXXXXXXXX
                 cursor.displayBars()//XXXXXXXXX
                 cursor.write(0,startingPosition0,list0)
                 cursor.write(1,startingPosition1,list1)
@@ -146,8 +71,6 @@ object TUI {
 
         }
     }
-
-
 
     fun newScore(): String {
         var count = 0
@@ -165,7 +88,7 @@ object TUI {
 
         while (true) {
             Time.sleep(100)
-            val key = KBD.getKey()
+            val key = TUI.getKey()
 
             nome = name.joinToString("") // Atualiza o nome com base no array `name`
             cursor.write(0, 0, " Name:${nome}                ") // Atualização contínua do display
