@@ -21,10 +21,12 @@ object Statistics { // Define um objeto chamado Statistics
         if (ACK) {
             // Se ACK for verdadeiro, adiciona 2 moedas
             FilesAccess.writeStatistics((numCoins + 2).toString(), numGames.toString())
-        } else {
-            // Se ACK for falso, remove 2 moedas
-            FilesAccess.writeStatistics((numCoins - 2).toString(), numGames.toString())
+
         }
+            else {
+            FilesAccess.writeStatistics((numCoins - 2).toString(), numGames.toString())
+            }
+
     }
 
     // Função para adicionar um jogo

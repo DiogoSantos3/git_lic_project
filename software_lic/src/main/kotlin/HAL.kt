@@ -1,6 +1,6 @@
 import isel.leic.UsbPort
 
-// Define um objeto singleton chamado HAL
+// Define um objeto  chamado HAL
 object HAL {
     // Variável para armazenar o último valor de saída escrito no UsbPort
     var last_Output = 0

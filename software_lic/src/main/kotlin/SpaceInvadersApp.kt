@@ -164,6 +164,10 @@ object SpaceInvadersApp {
                 }
             }
         }
+        if (!M.isM()) {
+            state = State.INITIAL  //adicionado depois, volta ao estado inicial ao clicar again no M e depois numa tecla
+            return
+        }
     }
 
     // Função para exibir estatísticas de manutenção
@@ -178,6 +182,7 @@ object SpaceInvadersApp {
             score = 0 // Reseta a pontuação
             ScoreDisplay.setScore(score) // Atualiza o display de pontuação
             val cores = Scores.splitScores().take(20) // Obtém as 20 melhores pontuações
+
             var position = 1 // Inicializa a posição na lista
             for ((name, score) in cores) { // Loop para exibir cada pontuação
                 val numCoins = Statistics.numCoins().toInt() // Obtém o número de moedas
@@ -187,13 +192,12 @@ object SpaceInvadersApp {
                 }
                 if (CoinAccepter.isCoin()) { // Se uma moeda for inserida
                     Statistics.addCoins(true) // Adiciona a moeda às estatísticas
-                    if (Statistics.numCoins().toInt() <= 9) {
+                   // if (Statistics.numCoins().toInt() <= 9) {
                         lcd_segunda_linha() // Atualiza a segunda linha do LCD
                         ScoreDisplay.init() // Inicializa a exibição da pontuação
-                    } else {
-                        lcd_segunda_linha() // Atualiza a segunda linha do LCD
-                        ScoreDisplay.init() // Inicializa a exibição da pontuação
-                    }
+                    //} else {
+                      //ScoreDisplay.init() // Inicializa a exibição da pontuação
+                   // }
                 }
                 if (TUI.getKey() == '*' && numCoins >= 2) { // Se a tecla '*' for pressionada e houver moedas suficientes
                     TUI.clear() // Limpa a tela
@@ -204,13 +208,13 @@ object SpaceInvadersApp {
                 TUI.cursor.write(0, 0, " Space Invaders ") // Escreve "Space Invaders" na linha 0
                 cursor.write(1, 0, namewithscore(position, name, score)) // Escreve o nome e a pontuação na linha 1
                 ScoreDisplay.init() // Inicializa a exibição da pontuação
-                if (Statistics.numCoins().toInt() <= 9) {
+               // if (Statistics.numCoins().toInt() <= 9) {
                     lcd_segunda_linha() // Atualiza a segunda linha do LCD
                     ScoreDisplay.init() // Inicializa a exibição da pontuação
-                } else {
-                    lcd_segunda_linha() // Atualiza a segunda linha do LCD
-                    ScoreDisplay.init() // Inicializa a exibição da pontuação
-                }
+                //} else {
+                  //  lcd_segunda_linha() // Atualiza a segunda linha do LCD
+                    //ScoreDisplay.init() // Inicializa a exibição da pontuação
+                //}
                 if (Scores.num_of_players == position) { // Se percorreu toda a lista de jogadores, reseta a posição
                     position = 0
                 }
@@ -222,13 +226,13 @@ object SpaceInvadersApp {
                     }
                     if (CoinAccepter.isCoin()) { // Se uma moeda for inserida
                         Statistics.addCoins(true) // Adiciona a moeda às estatísticas
-                        if (Statistics.numCoins().toInt() <= 9) {
+                      //  if (Statistics.numCoins().toInt() <= 9) {
                             lcd_segunda_linha() // Atualiza a segunda linha do LCD
                             ScoreDisplay.init() // Inicializa a exibição da pontuação
-                        } else {
+                        //} else {
                             lcd_segunda_linha() // Atualiza a segunda linha do LCD
                             ScoreDisplay.init() // Inicializa a exibição da pontuação
-                        }
+                        //}
                     }
                 }
             }

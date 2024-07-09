@@ -17,6 +17,7 @@ object Scores { // Define um objeto chamado Scores
                 null // Retorna null se o formato estiver incorreto
             }
         }.sortedByDescending { it.second.toIntOrNull() ?: 0 } // Ordena a lista por pontuação em ordem decrescente
+
     }
 
     // Função que lê as pontuações do arquivo
